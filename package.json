@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@emnapi/runtime": "^0.36.2",
+    "emnapi": "^0.36.2"
+  },
+  "peerDependencies": {
+    "@emnapi/core": "^0.36.2"
+  },
+  "peerDependenciesMeta": {
+    "@emnapi/core": {
+      "optional": true
+    }
+  }
+}
