@@ -1,4 +1,5 @@
 ```bash
+npm install --ignore-scripts
 node-gyp clean
 node-gyp configure --nodedir=./wasm -- -f make
 emmake make -C build
@@ -7,9 +8,17 @@ emmake make -C build
 ## Log
 
 <details>
-<summary>Windows</summary><br />
+<summary>Windows 11 22H2 22621.1413</summary><br />
+
+Failed due to the generated Makefile still use unix tools, even if execute make under WSL 2 then failed due to `\\` path seperator.
 
 ```
+> npm install --ignore-scripts
+
+add 3 packages, and audited 4 packages in 8s
+
+found 0 vulnerabilities
+
 > node-gyp clean
 gyp info it worked if it ends with ok
 gyp info using node-gyp@9.3.1
@@ -73,16 +82,20 @@ emmake: error: 'make -C build' failed (returned 2)
 </details>
 
 <details>
-<summary>WSL 2 (Success)</summary><br />
+<summary>WSL 2 Ubuntu 20.04 (Success)</summary><br />
 
 ```
+$ npm install --ignore-scripts
+
+added 3 packages in 418ms
+
 $ node-gyp clean
 gyp info it worked if it ends with ok
 gyp info using node-gyp@9.3.1
 gyp info using node@18.14.0 | linux | x64
 gyp info ok
 
-> node-gyp configure --nodedir=./wasm -- -f make
+$ node-gyp configure --nodedir=./wasm -- -f make
 gyp info it worked if it ends with ok
 gyp info using node-gyp@9.3.1
 gyp info using node@18.14.0 | linux | x64
@@ -115,7 +128,7 @@ gyp info spawn args   '-Goutput_dir=.'
 gyp info spawn args ]
 gyp info ok
 
-> emmake make -C build
+$ emmake make -C build
 make: make -C build
 make: Entering directory '/home/toyobayashi/Projects/emnapi-node-gyp-test/build'
   CC(target) Release/obj.target/binding/node_modules/emnapi/src/js_native_api.o
@@ -137,6 +150,65 @@ em++: warning: USE_PTHREADS + ALLOW_MEMORY_GROWTH may run non-wasm code slowly, 
 cache:INFO: generating system asset: symbol_lists/7f16a0cf42f34d504060010d577a8705337deb0d.txt... (this will be cached in "/home/toyobayashi/Projects/emsdk/upstream/emscripten/cache/symbol_lists/7f16a0cf42f34d504060010d577a8705337deb0d.txt" for subsequent builds)
 cache:INFO:  - ok
 make: Leaving directory '/home/toyobayashi/Projects/emnapi-node-gyp-test/build'
+```
+
+</details>
+
+<details>
+<summary>macOS 13.2.1 (M2 Pro)</summary><br />
+
+Failed due to emcc doesn't support `-arch arm64` compile flag.
+
+```
+$ npm install --ignore-scripts
+
+added 3 packages in 593ms
+
+$ node-gyp clean
+gyp info it worked if it ends with ok
+gyp info using node-gyp@9.3.1
+gyp info using node@18.12.1 | darwin | arm64
+gyp info ok
+
+$ node-gyp configure --nodedir=./wasm -- -f make
+gyp info it worked if it ends with ok
+gyp info using node-gyp@9.3.1
+gyp info using node@18.12.1 | darwin | arm64
+gyp info find Python using Python version 3.9.6 found at "/Library/Developer/CommandLineTools/usr/bin/python3"
+gyp WARN read config.gypi ENOENT: no such file or directory, open '/Users/toyobayashi/code/github/emnapi-node-gyp-test/wasm/include/node/config.gypi'
+gyp info spawn /Library/Developer/CommandLineTools/usr/bin/python3
+gyp info spawn args [
+gyp info spawn args   '/Users/toyobayashi/.nvm/versions/node/v18.12.1/lib/node_modules/node-gyp/gyp/gyp_main.py',
+gyp info spawn args   'binding.gyp',
+gyp info spawn args   '-f',
+gyp info spawn args   'make',
+gyp info spawn args   '-I',
+gyp info spawn args   '/Users/toyobayashi/code/github/emnapi-node-gyp-test/build/config.gypi',
+gyp info spawn args   '-I',
+gyp info spawn args   '/Users/toyobayashi/.nvm/versions/node/v18.12.1/lib/node_modules/node-gyp/addon.gypi',
+gyp info spawn args   '-I',
+gyp info spawn args   '/Users/toyobayashi/code/github/emnapi-node-gyp-test/wasm/common.gypi',
+gyp info spawn args   '-Dlibrary=shared_library',
+gyp info spawn args   '-Dvisibility=default',
+gyp info spawn args   '-Dnode_root_dir=./wasm',
+gyp info spawn args   '-Dnode_gyp_dir=/Users/toyobayashi/.nvm/versions/node/v18.12.1/lib/node_modules/node-gyp',
+gyp info spawn args   '-Dnode_lib_file=wasm/$(Configuration)/node.lib',
+gyp info spawn args   '-Dmodule_root_dir=/Users/toyobayashi/code/github/emnapi-node-gyp-test',
+gyp info spawn args   '-Dnode_engine=v8',
+gyp info spawn args   '--depth=.',
+gyp info spawn args   '--no-parallel',
+gyp info spawn args   '--generator-output',
+gyp info spawn args   'build',
+gyp info spawn args   '-Goutput_dir=.'
+gyp info spawn args ]
+gyp info ok
+
+$ emmake make -C build
+make: make -C build
+  CC(target) Release/obj.target/binding/node_modules/emnapi/src/js_native_api.o
+emcc: error: arm64: No such file or directory ("arm64" was expected to be an input file, based on the commandline arguments provided)
+make: *** [Release/obj.target/binding/node_modules/emnapi/src/js_native_api.o] Error 1
+emmake: error: 'make -C build' failed (returned 2)
 ```
 
 </details>
