@@ -157,6 +157,18 @@ make: Leaving directory '/home/toyobayashi/Projects/emnapi-node-gyp-test/build'
 <details>
 <summary>✅ macOS 14.1.2</summary><br />
 
+Add the following environment variables:
+
+```bash
+GYP_CROSSCOMPILE=1
+AR_host=ar
+CC_host=clang
+CXX_host=clang++
+AR_target=emar
+CC_target=emcc
+CXX_target=em++
+```
+
 ```
 $ npm install --ignore-scripts
 
