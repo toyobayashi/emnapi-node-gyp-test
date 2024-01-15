@@ -1,0 +1,13 @@
+diff --git a/node_modules/node-gyp/gyp/pylib/gyp/generator/make.py b/node_modules/node-gyp/gyp/pylib/gyp/generator/make.py
+index 1b99749..9a40d9f 100644
+--- a/node_modules/node-gyp/gyp/pylib/gyp/generator/make.py
++++ b/node_modules/node-gyp/gyp/pylib/gyp/generator/make.py
+@@ -859,7 +859,7 @@ $(obj).$(TOOLSET)/$(TARGET)/%%.o: $(obj)/%%%s FORCE_DO_CMD
+             self.output = self.ComputeMacBundleOutput(spec)
+             self.output_binary = self.ComputeMacBundleBinaryOutput(spec)
+         else:
+-            self.output = self.output_binary = self.ComputeOutput(spec)
++            self.output = self.output_binary = self.ComputeOutput(spec).replace('\\', '/')
+ 
+         self.is_standalone_static_library = bool(
+             spec.get("standalone_static_library", 0)
