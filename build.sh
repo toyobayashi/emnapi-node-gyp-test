@@ -1,12 +1,12 @@
 #/usr/bin/env bash
 
-GYP_CROSSCOMPILE=1
-AR_host=ar
-CC_host=clang
-CXX_host=clang++
-AR_target=emar
-CC_target=emcc
-CXX_target=em++
+export GYP_CROSSCOMPILE=1
+export AR_host=ar
+export CC_host=clang
+export CXX_host=clang++
+export AR_target=emar
+export CC_target=emcc
+export CXX_target=em++
 
 emmake node-gyp rebuild --verbose --nodedir=./wasm -- -f make 
 
