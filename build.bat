@@ -9,7 +9,7 @@ set CC_target=emcc.bat
 set CXX_target=em++.bat
 
 call npx.cmd node-gyp clean
-call npx.cmd node-gyp configure --nodedir=./wasm -- -f make
+call npx.cmd node-gyp configure --nodedir=./node_modules/emnapi -- -f make -Dcross_compiling=1
 
 node ./scripts/replace-sep.js
 

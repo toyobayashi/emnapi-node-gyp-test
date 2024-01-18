@@ -8,8 +8,8 @@ export AR_target="$WASI_SDK_PATH/bin/ar"
 export CC_target="$WASI_SDK_PATH/bin/clang"
 export CXX_target="$WASI_SDK_PATH/bin/clang++"
 
-node-gyp rebuild --verbose --nodedir=./wasm -- -f make -Dtarget_os=wasi -Dwasm_threads=1
+npx node-gyp rebuild --verbose --nodedir=./node_modules/emnapi -- -f make -Dcross_compiling=1 -Dtarget_os=wasi -Dwasm_threads=1
 
 # node-gyp clean
-# node-gyp configure --nodedir=./wasm -- -f make -Dtarget_os=wasi -Dwasm_threads=1
+# node-gyp configure --nodedir=./node_modules/emnapi -- -f make -Dcross_compiling=1 -Dtarget_os=wasi -Dwasm_threads=1
 # node-gyp build --verbose
