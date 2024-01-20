@@ -1,8 +1,21 @@
-diff --git a/node_modules/emnapi/common.gypi b/node_modules/emnapi/common.gypi
+From be4c08f356e11b3cf87a285dec34325832497d60 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Thu, 18 Jan 2024 23:07:20 +0800
+Subject: [PATCH 1/4] feat: add basic gyp support
+
+---
+ packages/emnapi/common.gypi | 371 ++++++++++++++++++++++++++++++++++++
+ packages/emnapi/emnapi.gyp  |  50 +++++
+ packages/emnapi/index.js    |   4 +-
+ 3 files changed, 424 insertions(+), 1 deletion(-)
+ create mode 100644 packages/emnapi/common.gypi
+ create mode 100644 packages/emnapi/emnapi.gyp
+
+diff --git a/packages/emnapi/common.gypi b/packages/emnapi/common.gypi
 new file mode 100644
 index 0000000..cb9a18b
 --- /dev/null
-+++ b/node_modules/emnapi/common.gypi
++++ b/packages/emnapi/common.gypi
 @@ -0,0 +1,371 @@
 +# This file is originally created by [RReverser](https://github.com/RReverser)
 +# in https://github.com/lovell/sharp/pull/3522
@@ -10,7 +23,7 @@ index 0000000..cb9a18b
 +  'variables': {
 +    # 'emscripten' | 'wasi' | 'unknown'
 +    'target_os%': 'emscripten',
-+    'napi_build_version%': '9',
++    'napi_build_version%': '8',
 +    'clang': 1,
 +    'target_arch%': 'wasm32',
 +    'wasm_threads%': 0,
@@ -375,11 +388,11 @@ index 0000000..cb9a18b
 +    ],
 +  }
 +}
-diff --git a/node_modules/emnapi/emnapi.gyp b/node_modules/emnapi/emnapi.gyp
+diff --git a/packages/emnapi/emnapi.gyp b/packages/emnapi/emnapi.gyp
 new file mode 100644
 index 0000000..4a97350
 --- /dev/null
-+++ b/node_modules/emnapi/emnapi.gyp
++++ b/packages/emnapi/emnapi.gyp
 @@ -0,0 +1,50 @@
 +{
 +  'targets': [
@@ -431,10 +444,10 @@ index 0000000..4a97350
 +    }
 +  ]
 +}
-diff --git a/node_modules/emnapi/index.js b/node_modules/emnapi/index.js
+diff --git a/packages/emnapi/index.js b/packages/emnapi/index.js
 index 05424c6..2eb2bdb 100644
---- a/node_modules/emnapi/index.js
-+++ b/node_modules/emnapi/index.js
+--- a/packages/emnapi/index.js
++++ b/packages/emnapi/index.js
 @@ -5,7 +5,7 @@ const path = require('path')
  
  const include = path.join(__dirname, 'include')
@@ -455,3 +468,167 @@ index 05424c6..2eb2bdb 100644
  exports.js_library = jsLibrary
  exports.sources = sources
 +exports.targets = targets
+
+From b7286b9409f3231701a778b1d108fb03f61ba161 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Fri, 19 Jan 2024 00:09:25 +0800
+Subject: [PATCH 2/4] napi_build_version 9
+
+---
+ packages/emnapi/common.gypi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/packages/emnapi/common.gypi b/packages/emnapi/common.gypi
+index cb9a18b..3463c5c 100644
+--- a/packages/emnapi/common.gypi
++++ b/packages/emnapi/common.gypi
+@@ -4,7 +4,7 @@
+   'variables': {
+     # 'emscripten' | 'wasi' | 'unknown'
+     'target_os%': 'emscripten',
+-    'napi_build_version%': '8',
++    'napi_build_version%': '9',
+     'clang': 1,
+     'target_arch%': 'wasm32',
+     'wasm_threads%': 0,
+
+From f53d8229024409daf81c2593c76a5a62e2e06a5c Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sat, 20 Jan 2024 11:34:08 +0800
+Subject: [PATCH 3/4] update common.gypi
+
+---
+ packages/emnapi/common.gypi | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/packages/emnapi/common.gypi b/packages/emnapi/common.gypi
+index 3463c5c..b1f4788 100644
+--- a/packages/emnapi/common.gypi
++++ b/packages/emnapi/common.gypi
+@@ -89,15 +89,13 @@
+           '-sDEFAULT_TO_CXX=0',
+         ],
+         'ldflags': [
+-          '--js-library=<!(node -p "require(\'emnapi\').js_library")',
+           "-sALLOW_MEMORY_GROWTH=1",
+           "-sEXPORTED_FUNCTIONS=['_malloc','_free','_napi_register_wasm_v1','_node_api_module_get_api_version_v1']",
+           '-sNODEJS_CATCH_EXIT=0',
+           '-sNODEJS_CATCH_REJECTION=0',
+-          '-sAUTO_JS_LIBRARIES=0',
+-          '-sAUTO_NATIVE_LIBRARIES=0',
+           '-sWASM_BIGINT=1',
+           '-sMIN_CHROME_VERSION=84',
++          '-sMIN_NODE_VERSION=161500',
+           '-sSTACK_SIZE=2MB',
+           '-sDEFAULT_PTHREAD_STACK_SIZE=2MB',
+         ],
+@@ -122,15 +120,13 @@
+                 '-sDEFAULT_TO_CXX=0',
+               ],
+               'OTHER_LDFLAGS': [
+-                '--js-library=<!(node -p "require(\'emnapi\').js_library")',
+                 "-sALLOW_MEMORY_GROWTH=1",
+                 "-sEXPORTED_FUNCTIONS=['_malloc','_free','_napi_register_wasm_v1','_node_api_module_get_api_version_v1']",
+                 '-sNODEJS_CATCH_EXIT=0',
+                 '-sNODEJS_CATCH_REJECTION=0',
+-                '-sAUTO_JS_LIBRARIES=0',
+-                '-sAUTO_NATIVE_LIBRARIES=0',
+                 '-sWASM_BIGINT=1',
+                 '-sMIN_CHROME_VERSION=84',
++                '-sMIN_NODE_VERSION=161500',
+                 '-sSTACK_SIZE=2MB',
+                 '-sDEFAULT_PTHREAD_STACK_SIZE=2MB',
+               ],
+@@ -254,6 +250,9 @@
+         'conditions': [
+           ['target_os == "emscripten"', {
+             'product_extension': 'js',
++            'libraries': [
++              '--js-library=<!(node -p "require(\'emnapi\').js_library")',
++            ]
+           }, {
+             # not emscripten
+             'product_extension': 'wasm',
+
+From 972a03174759c6deb3b7e2955fa65bb2243e9ce7 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sat, 20 Jan 2024 11:34:29 +0800
+Subject: [PATCH 4/4] add emnapi static library targets
+
+---
+ packages/emnapi/emnapi.gyp | 62 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+
+diff --git a/packages/emnapi/emnapi.gyp b/packages/emnapi/emnapi.gyp
+index 4a97350..8af6858 100644
+--- a/packages/emnapi/emnapi.gyp
++++ b/packages/emnapi/emnapi.gyp
+@@ -45,6 +45,68 @@
+           ],
+         }],
+       ],
++    },
++    {
++      'target_name': 'emnapi_basic',
++      'type': 'static_library',
++      'sources': [
++        'src/js_native_api.c',
++        'src/node_api.c',
++        'src/async_cleanup_hook.c',
++        'src/async_context.c',
++      ],
++      'direct_dependent_settings': {
++        'include_dirs+': [ 'include' ],
++      },
++      'link_settings': {
++        'target_conditions': [
++          ['_type == "executable" and target_os == "emscripten"', {
++            'libraries': [
++              '--js-library=<!(node -p "require(\'emnapi\').js_library")',
++            ]
++          }],
++        ]
++      },
++      'conditions': [
++        ['wasm_threads != 0 and target_os != "emscripten" and target_os != "wasi"', {
++          'sources': [
++            'src/thread/async_worker_create.c',
++            'src/thread/async_worker_init.S',
++          ],
++        }],
++      ]
++    },
++    {
++      'target_name': 'emnapi',
++      'type': 'static_library',
++      'sources': [
++        'src/js_native_api.c',
++        'src/node_api.c',
++        'src/async_cleanup_hook.c',
++        'src/async_context.c',
++
++        'src/uv/uv-common.c',
++        'src/uv/threadpool.c',
++        'src/uv/unix/loop.c',
++        'src/uv/unix/thread.c',
++        'src/uv/unix/async.c',
++        'src/uv/unix/core.c',
++
++        'src/async_work.c',
++        'src/threadsafe_function.c',
++      ],
++      'direct_dependent_settings': {
++        'include_dirs+': [ 'include' ],
++      },
++      'link_settings': {
++        'target_conditions': [
++          ['_type == "executable" and target_os == "emscripten"', {
++            'libraries': [
++              '--js-library=<!(node -p "require(\'emnapi\').js_library")',
++            ]
++          }],
++        ]
++      },
+     }
+   ]
+ }

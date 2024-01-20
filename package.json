@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "postinstall": "patch-package",
+    "postinstall": "node ./scripts/patch.js",
     "build:win": "build.bat",
     "build:unix": "./build.sh",
     "start": "node ./main.js"
@@ -15,7 +15,6 @@
     "emnapi": "0.45.0"
   },
   "devDependencies": {
-    "node-gyp": "10.0.1",
-    "patch-package": "^8.0.0"
+    "node-gyp": "10.0.1"
   }
 }

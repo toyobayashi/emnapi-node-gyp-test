@@ -1,0 +1,121 @@
+From 6c9a795c263d3b68b5d1598dfa484ce3e111e7da Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Thu, 18 Jan 2024 22:55:37 +0800
+Subject: [PATCH 1/3] fix: support cross compiling for wasm with make generator
+
+---
+ pylib/gyp/generator/make.py | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index 1b99749..e6e95a3 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -859,7 +859,11 @@ def Write(
+             self.output = self.ComputeMacBundleOutput(spec)
+             self.output_binary = self.ComputeMacBundleBinaryOutput(spec)
+         else:
+-            self.output = self.output_binary = self.ComputeOutput(spec)
++            if self.flavor == "win":
++                # prevent from generating copy targets on Windows
++                self.output = self.output_binary = self.ComputeOutput(spec).replace('\\', '/')
++            else:
++                self.output = self.output_binary = self.ComputeOutput(spec)
+ 
+         self.is_standalone_static_library = bool(
+             spec.get("standalone_static_library", 0)
+@@ -2441,13 +2445,17 @@ def CalculateMakefilePath(build_file, base_name):
+     flock_command = "flock"
+     copy_archive_arguments = "-af"
+     makedep_arguments = "-MMD"
++
++    # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
++    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(' -Wl,--end-group', '') if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
++
+     header_params = {
+         "default_target": default_target,
+         "builddir": builddir_name,
+         "default_configuration": default_configuration,
+         "flock": flock_command,
+         "flock_index": 1,
+-        "link_commands": LINK_COMMANDS_LINUX,
++        "link_commands": link_commands,
+         "extra_commands": "",
+         "srcdir": srcdir,
+         "copy_archive_args": copy_archive_arguments,
+@@ -2463,7 +2471,8 @@ def CalculateMakefilePath(build_file, base_name):
+         "LINK.host": GetEnvironFallback(("LINK_host", "LINK"), "$(CXX.host)"),
+         "PLI.host": GetEnvironFallback(("PLI_host", "PLI"), "pli"),
+     }
+-    if flavor == "mac":
++    # If cross-compiling, reserve linux link commands and do not use gyp-mac-tool
++    if flavor == "mac" and not gyp.common.CrossCompileRequested():
+         flock_command = "./gyp-mac-tool flock"
+         header_params.update(
+             {
+
+From 326246b749c5697d1a829c36c06e042cf2417450 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Fri, 19 Jan 2024 12:39:23 +0800
+Subject: [PATCH 2/3] fix: lint
+
+---
+ pylib/gyp/generator/make.py | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index e6e95a3..3036a08 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -861,7 +861,9 @@ def Write(
+         else:
+             if self.flavor == "win":
+                 # prevent from generating copy targets on Windows
+-                self.output = self.output_binary = self.ComputeOutput(spec).replace('\\', '/')
++                self.output = self.output_binary = self.ComputeOutput(spec).replace(
++                    '\\', '/'
++                )
+             else:
+                 self.output = self.output_binary = self.ComputeOutput(spec)
+ 
+@@ -2447,7 +2449,9 @@ def CalculateMakefilePath(build_file, base_name):
+     makedep_arguments = "-MMD"
+ 
+     # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
+-    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(' -Wl,--end-group', '') if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
++    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(
++        ' -Wl,--end-group', ''
++    ) if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
+ 
+     header_params = {
+         "default_target": default_target,
+
+From 9bc78054b675b320bb980de14cabd0a2240d2ac9 Mon Sep 17 00:00:00 2001
+From: Toyo Li <lifenglin314@outlook.com>
+Date: Fri, 19 Jan 2024 21:04:38 +0800
+Subject: [PATCH 3/3] refactor for readability
+
+Co-authored-by: Christian Clauss <cclauss@me.com>
+---
+ pylib/gyp/generator/make.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index 3036a08..ba9be4b 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -2449,9 +2449,11 @@ def CalculateMakefilePath(build_file, base_name):
+     makedep_arguments = "-MMD"
+ 
+     # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
+-    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(
+-        ' -Wl,--end-group', ''
+-    ) if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
++    link_commands = LINK_COMMANDS_LINUX
++    if gyp.common.CrossCompileRequested():
++        link_commands = link_commands.replace(' -Wl,--start-group', '').replace(
++            ' -Wl,--end-group', ''
++        )
+ 
+     header_params = {
+         "default_target": default_target,
