@@ -1,7 +1,7 @@
 From be4c08f356e11b3cf87a285dec34325832497d60 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 23:07:20 +0800
-Subject: [PATCH 1/5] feat: add basic gyp support
+Subject: [PATCH 1/6] feat: add basic gyp support
 
 ---
  packages/emnapi/common.gypi | 371 ++++++++++++++++++++++++++++++++++++
@@ -472,7 +472,7 @@ index 05424c6..2eb2bdb 100644
 From b7286b9409f3231701a778b1d108fb03f61ba161 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 00:09:25 +0800
-Subject: [PATCH 2/5] napi_build_version 9
+Subject: [PATCH 2/6] napi_build_version 9
 
 ---
  packages/emnapi/common.gypi | 2 +-
@@ -495,7 +495,7 @@ index cb9a18b..3463c5c 100644
 From f53d8229024409daf81c2593c76a5a62e2e06a5c Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 11:34:08 +0800
-Subject: [PATCH 3/5] update common.gypi
+Subject: [PATCH 3/6] update common.gypi
 
 ---
  packages/emnapi/common.gypi | 11 +++++------
@@ -553,7 +553,7 @@ index 3463c5c..b1f4788 100644
 From 972a03174759c6deb3b7e2955fa65bb2243e9ce7 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 11:34:29 +0800
-Subject: [PATCH 4/5] add emnapi static library targets
+Subject: [PATCH 4/6] add emnapi static library targets
 
 ---
  packages/emnapi/emnapi.gyp | 62 ++++++++++++++++++++++++++++++++++++++
@@ -636,7 +636,7 @@ index 4a97350..8af6858 100644
 From 2f8c2c914cbf991832c86823fba6b0ef8b6ca498 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 13:06:52 +0800
-Subject: [PATCH 5/5] product_extension%
+Subject: [PATCH 5/6] product_extension%
 
 ---
  packages/emnapi/common.gypi | 4 ++--
@@ -662,3 +662,516 @@ index b1f4788..539c12e 100644
  
              'ldflags': [
                '-Wl,--export-dynamic',
+
+From 99690cf7b370264c16f6486a28fa619cfe1ffd24 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sat, 20 Jan 2024 15:01:02 +0800
+Subject: [PATCH 6/6] use OS
+
+---
+ packages/emnapi/common.gypi | 318 +++++++++++++++---------------------
+ packages/emnapi/emnapi.gyp  |  14 +-
+ 2 files changed, 138 insertions(+), 194 deletions(-)
+
+diff --git a/packages/emnapi/common.gypi b/packages/emnapi/common.gypi
+index 539c12e..c249504 100644
+--- a/packages/emnapi/common.gypi
++++ b/packages/emnapi/common.gypi
+@@ -2,8 +2,7 @@
+ # in https://github.com/lovell/sharp/pull/3522
+ {
+   'variables': {
+-    # 'emscripten' | 'wasi' | 'unknown'
+-    'target_os%': 'emscripten',
++    # OS: 'emscripten' | 'wasi' | 'unknown'
+     'napi_build_version%': '9',
+     'clang': 1,
+     'target_arch%': 'wasm32',
+@@ -29,32 +28,40 @@
+       '-std=c++17'
+     ],
+ 
++    'xcode_settings': {
++      # WARNING_CFLAGS == cflags
++      # OTHER_CFLAGS == cflags_c
++      # OTHER_CPLUSPLUSFLAGS == cflags_cc
++      # OTHER_LDFLAGS == ldflags
++
++      'CLANG_CXX_LANGUAGE_STANDARD': 'c++17',
++      'GCC_ENABLE_CPP_RTTI': 'NO',
++      'GCC_ENABLE_CPP_EXCEPTIONS': 'NO',
++      'WARNING_CFLAGS': [
++        '-Wall',
++        '-Wextra',
++        '-Wno-unused-parameter',
++      ]
++    },
++
+     'default_configuration': 'Release',
+     'configurations': {
+       'Debug': {
+         'defines': [ 'DEBUG', '_DEBUG' ],
+         'cflags': [ '-g', '-O0' ],
+         'ldflags': [ '-g', '-O0' ],
+-        'conditions': [
+-          ['OS=="mac"', {
+-            'xcode_settings': {
+-              'WARNING_CFLAGS': [ '-g', '-O0' ],
+-              'OTHER_LDFLAGS': [ '-g', '-O0' ],
+-            },
+-          }],
+-        ],
++        'xcode_settings': {
++          'WARNING_CFLAGS': [ '-g', '-O0' ],
++          'OTHER_LDFLAGS': [ '-g', '-O0' ],
++        },
+       },
+       'Release': {
+         'cflags': [ '-O3' ],
+         'ldflags': [ '-O3' ],
+-        'conditions': [
+-          ['OS=="mac"', {
+-            'xcode_settings': {
+-              'WARNING_CFLAGS': [ '-O3' ],
+-              'OTHER_LDFLAGS': [ '-O3' ],
+-            },
+-          }],
+-        ],
++        'xcode_settings': {
++          'WARNING_CFLAGS': [ '-O3' ],
++          'OTHER_LDFLAGS': [ '-O3' ],
++        },
+       }
+     },
+ 
+@@ -63,24 +70,7 @@
+     ],
+ 
+     'conditions': [
+-      ['OS=="mac"', {
+-        'xcode_settings': {
+-          # WARNING_CFLAGS == cflags
+-          # OTHER_CFLAGS == cflags_c
+-          # OTHER_CPLUSPLUSFLAGS == cflags_cc
+-          # OTHER_LDFLAGS == ldflags
+-
+-          'CLANG_CXX_LANGUAGE_STANDARD': 'c++17',
+-          'GCC_ENABLE_CPP_RTTI': 'NO',
+-          'GCC_ENABLE_CPP_EXCEPTIONS': 'NO',
+-          'WARNING_CFLAGS': [
+-            '-Wall',
+-            '-Wextra',
+-            '-Wno-unused-parameter',
+-          ]
+-        },
+-      }],
+-      ['target_os == "emscripten"', {
++      ['OS == "emscripten"', {
+         'defines': [
+           'NAPI_EXTERN=__attribute__((__import_module__(\"env\")))'
+         ],
+@@ -99,62 +89,48 @@
+           '-sSTACK_SIZE=2MB',
+           '-sDEFAULT_PTHREAD_STACK_SIZE=2MB',
+         ],
++        'xcode_settings': {
++          'WARNING_CFLAGS': [
++            '-sDEFAULT_TO_CXX=0',
++          ],
++          'OTHER_LDFLAGS': [
++            "-sALLOW_MEMORY_GROWTH=1",
++            "-sEXPORTED_FUNCTIONS=['_malloc','_free','_napi_register_wasm_v1','_node_api_module_get_api_version_v1']",
++            '-sNODEJS_CATCH_EXIT=0',
++            '-sNODEJS_CATCH_REJECTION=0',
++            '-sWASM_BIGINT=1',
++            '-sMIN_CHROME_VERSION=84',
++            '-sMIN_NODE_VERSION=161500',
++            '-sSTACK_SIZE=2MB',
++            '-sDEFAULT_PTHREAD_STACK_SIZE=2MB',
++          ],
++        },
+ 
+         'configurations': {
+           'Debug': {
+             'ldflags': [ '-sSAFE_HEAP=1' ],
+-            'conditions': [
+-              ['OS=="mac"', {
+-                'xcode_settings': {
+-                  'OTHER_LDFLAGS': [ '-sSAFE_HEAP=1' ],
+-                },
+-              }],
+-            ],
++            'xcode_settings': {
++              'OTHER_LDFLAGS': [ '-sSAFE_HEAP=1' ],
++            },
+           }
+         },
+ 
+         'conditions': [
+-          ['OS=="mac"', {
+-            'xcode_settings': {
+-              'WARNING_CFLAGS': [
+-                '-sDEFAULT_TO_CXX=0',
+-              ],
+-              'OTHER_LDFLAGS': [
+-                "-sALLOW_MEMORY_GROWTH=1",
+-                "-sEXPORTED_FUNCTIONS=['_malloc','_free','_napi_register_wasm_v1','_node_api_module_get_api_version_v1']",
+-                '-sNODEJS_CATCH_EXIT=0',
+-                '-sNODEJS_CATCH_REJECTION=0',
+-                '-sWASM_BIGINT=1',
+-                '-sMIN_CHROME_VERSION=84',
+-                '-sMIN_NODE_VERSION=161500',
+-                '-sSTACK_SIZE=2MB',
+-                '-sDEFAULT_PTHREAD_STACK_SIZE=2MB',
+-              ],
+-            },
+-          }],
+           ['target_arch == "wasm64"', {
+             'cflags': [ '-sMEMORY64=1' ],
+             'ldflags': [ '-sMEMORY64=1' ],
+-            'conditions': [
+-              ['OS=="mac"', {
+-                'xcode_settings': {
+-                  'WARNING_CFLAGS': [ '-sMEMORY64=1' ],
+-                  'OTHER_LDFLAGS': [ '-sMEMORY64=1' ],
+-                },
+-              }],
+-            ],
++            'xcode_settings': {
++              'WARNING_CFLAGS': [ '-sMEMORY64=1' ],
++              'OTHER_LDFLAGS': [ '-sMEMORY64=1' ],
++            },
+           }],
+           ['wasm_threads != 0', {
+             'cflags': [ '-sWASM_WORKERS=1', '-pthread' ],
+             'ldflags': [ '-pthread' ],
+-            'conditions': [
+-              ['OS=="mac"', {
+-                'xcode_settings': {
+-                  'WARNING_CFLAGS': [ '-sWASM_WORKERS=1', '-pthread' ],
+-                  'OTHER_LDFLAGS': [ '-pthread' ],
+-                },
+-              }],
+-            ],
++            'xcode_settings': {
++              'WARNING_CFLAGS': [ '-sWASM_WORKERS=1', '-pthread' ],
++              'OTHER_LDFLAGS': [ '-pthread' ],
++            },
+           }],
+         ],
+       }, {
+@@ -162,80 +138,62 @@
+         'configurations': {
+           'Release': {
+             'ldflags': [ '-Wl,--strip-debug' ],
+-            'conditions': [
+-              ['OS=="mac"', {
+-                'xcode_settings': {
+-                  'OTHER_LDFLAGS': [ '-Wl,--strip-debug' ],
+-                },
+-              }],
+-            ],
++            'xcode_settings': {
++              'OTHER_LDFLAGS': [ '-Wl,--strip-debug' ],
++            },
+           }
+         },
+         
+         'conditions': [
+           ['wasm_threads != 0', {
+             'cflags': [ "-matomics", "-mbulk-memory" ],
+-            'conditions': [
+-              ['OS=="mac"', {
+-                'xcode_settings': {
+-                  'WARNING_CFLAGS': [ "-matomics", "-mbulk-memory" ],
+-                },
+-              }],
+-            ],
++            'xcode_settings': {
++              'WARNING_CFLAGS': [ "-matomics", "-mbulk-memory" ],
++            },
+           }],
+-          ['target_os == "wasi"', {
++          ['OS == "wasi"', {
+             'ldflags': [
+               '-mexec-model=reactor'
+             ],
++            'xcode_settings': {
++              'OTHER_LDFLAGS': [
++                '-mexec-model=reactor'
++              ],
++            },
+             'conditions': [
+-              ['OS=="mac"', {
+-                'xcode_settings': {
+-                  'OTHER_LDFLAGS': [
+-                    '-mexec-model=reactor'
+-                  ],
+-                },
+-              }],
+               ['wasm_threads != 0', {
+                 # wasi-threads
+                 'cflags': [ '--target=wasm32-wasi-threads', '-pthread' ],
+                 'ldflags': [ '--target=wasm32-wasi-threads', '-pthread' ],
+-                'conditions': [
+-                  ['OS=="mac"', {
+-                    'xcode_settings': {
+-                      'WARNING_CFLAGS': [ '--target=wasm32-wasi-threads', '-pthread' ],
+-                      'OTHER_LDFLAGS': [ '--target=wasm32-wasi-threads', '-pthread' ],
+-                    },
+-                  }],
+-                ]
++                'xcode_settings': {
++                  'WARNING_CFLAGS': [ '--target=wasm32-wasi-threads', '-pthread' ],
++                  'OTHER_LDFLAGS': [ '--target=wasm32-wasi-threads', '-pthread' ],
++                },
+               }, {
+                 # wasi
+                 'cflags': [ '--target=wasm32-wasi' ],
+                 'ldflags': [ '--target=wasm32-wasi' ],
+-                'conditions': [
+-                  ['OS=="mac"', {
+-                    'xcode_settings': {
+-                      'WARNING_CFLAGS': [ '--target=wasm32-wasi' ],
+-                      'OTHER_LDFLAGS': [ '--target=wasm32-wasi' ],
+-                    },
+-                  }],
+-                ]
++                'xcode_settings': {
++                  'WARNING_CFLAGS': [ '--target=wasm32-wasi' ],
++                  'OTHER_LDFLAGS': [ '--target=wasm32-wasi' ],
++                },
+               }],
+             ],
+           }, {
+-            # wasm32-unknown-unknown
+-            'cflags': [ '--target=wasm32-unknown-unknown' ],
+-            'ldflags': [
+-              '--target=wasm32-unknown-unknown',
+-            ],
+             'conditions': [
+-              ['OS=="mac"', {
++              ['OS == "unknown"', {
++                # wasm32-unknown-unknown
++                'cflags': [ '--target=wasm32-unknown-unknown' ],
++                'ldflags': [
++                  '--target=wasm32-unknown-unknown',
++                ],
+                 'xcode_settings': {
+                   'WARNING_CFLAGS': [ '--target=wasm32-unknown-unknown' ],
+                   'OTHER_LDFLAGS': [
+                     '--target=wasm32-unknown-unknown',
+                   ],
+                 },
+-              }],
++              }]
+             ],
+           }],
+         ]
+@@ -248,7 +206,7 @@
+           '<!@(node -p "require(\'emnapi\').sources.map(x => JSON.stringify(path.relative(process.cwd(), x))).join(\' \')")'
+         ],
+         'conditions': [
+-          ['target_os == "emscripten"', {
++          ['OS == "emscripten"', {
+             'product_extension%': 'js',
+             'libraries': [
+               '--js-library=<!(node -p "require(\'emnapi\').js_library")',
+@@ -266,90 +224,78 @@
+               '-Wl,--import-undefined',
+               '-Wl,--export-table',
+             ],
++            'xcode_settings': {
++              'OTHER_LDFLAGS': [
++                '-Wl,--export-dynamic',
++                '-Wl,--export=malloc',
++                '-Wl,--export=free',
++                '-Wl,--export=napi_register_wasm_v1',
++                '-Wl,--export-if-defined=node_api_module_get_api_version_v1',
++                '-Wl,--import-undefined',
++                '-Wl,--export-table',
++              ],
++            },
+ 
+             'conditions': [
+-              ['OS=="mac"', {
+-                'xcode_settings': {
+-                  'OTHER_LDFLAGS': [
+-                    '-Wl,--export-dynamic',
+-                    '-Wl,--export=malloc',
+-                    '-Wl,--export=free',
+-                    '-Wl,--export=napi_register_wasm_v1',
+-                    '-Wl,--export-if-defined=node_api_module_get_api_version_v1',
+-                    '-Wl,--import-undefined',
+-                    '-Wl,--export-table',
+-                  ],
+-                },
+-              }],
+               ['wasm_threads != 0', {
+                 'ldflags': [
+                   '-Wl,--import-memory',
+                   '-Wl,--shared-memory',
+                   '-Wl,--max-memory=2147483648',
+                 ],
+-                'conditions': [
+-                  ['OS=="mac"', {
+-                    'xcode_settings': {
+-                      'OTHER_LDFLAGS': [
+-                        '-Wl,--import-memory',
+-                        '-Wl,--shared-memory',
+-                        '-Wl,--max-memory=2147483648',
+-                      ]
+-                    },
+-                  }],
+-                ],
++                'xcode_settings': {
++                  'OTHER_LDFLAGS': [
++                    '-Wl,--import-memory',
++                    '-Wl,--shared-memory',
++                    '-Wl,--max-memory=2147483648',
++                  ]
++                },
+               }, {
+                 'ldflags': [
+                   '-Wl,--initial-memory=16777216'
+                 ],
+-                'conditions': [
+-                  ['OS=="mac"', {
+-                    'xcode_settings': {
+-                      'OTHER_LDFLAGS': [
+-                        '-Wl,--initial-memory=16777216'
+-                      ]
+-                    },
+-                  }],
+-                ],
++                'xcode_settings': {
++                  'OTHER_LDFLAGS': [
++                    '-Wl,--initial-memory=16777216'
++                  ]
++                },
+               }],
+-              ['target_os == "wasi"', {}, {
+-                'defines': [
+-                  'PAGESIZE=65536'
+-                ],
+-                'ldflags': [
+-                  '-nostdlib',
+-                  '-Wl,--no-entry',
+-                ],
+-                'sources': [
+-                  'src/malloc/sbrk.c',
+-                  'src/malloc/memcpy.c',
+-                  'src/malloc/memset.c',
+-                  'src/malloc/dlmalloc/dlmalloc.c',
+-                ],
++              ['OS == "wasi"', {}, {
+                 'conditions': [
+-                  ['OS=="mac"', {
++                  ['OS == "unknown"', {
++                    'defines': [
++                      'PAGESIZE=65536'
++                    ],
++                    'ldflags': [
++                      '-nostdlib',
++                      '-Wl,--no-entry',
++                    ],
+                     'xcode_settings': {
+                       'OTHER_LDFLAGS': [
+                         '-nostdlib',
+                         '-Wl,--no-entry',
+                       ],
+                     },
+-                  }],
+-                  ['wasm_threads != 0', {
+-                    # wasm32 + threads
+                     'sources': [
+-                      'src/thread/async_worker_create.c',
+-                      'src/thread/async_worker_init.S',
+-                    ],
+-                    'defines': [
+-                      'USE_LOCKS=1'
+-                    ],
+-                    'ldflags': [
+-                      '-Wl,--export=emnapi_async_worker_create',
+-                      '-Wl,--export=emnapi_async_worker_init',
++                      'src/malloc/sbrk.c',
++                      'src/malloc/memcpy.c',
++                      'src/malloc/memset.c',
++                      'src/malloc/dlmalloc/dlmalloc.c',
+                     ],
+                     'conditions': [
+-                      ['OS=="mac"', {
++                      ['wasm_threads != 0', {
++                        # wasm32 + threads
++                        'sources': [
++                          'src/thread/async_worker_create.c',
++                          'src/thread/async_worker_init.S',
++                        ],
++                        'defines': [
++                          'USE_LOCKS=1'
++                        ],
++                        'ldflags': [
++                          '-Wl,--export=emnapi_async_worker_create',
++                          '-Wl,--export=emnapi_async_worker_init',
++                        ],
+                         'xcode_settings': {
+                           'OTHER_LDFLAGS': [
+                             '-Wl,--export=emnapi_async_worker_create',
+@@ -357,8 +303,8 @@
+                           ],
+                         },
+                       }],
+-                    ],
+-                  }],
++                    ]
++                  }]
+                 ]
+               }],
+             ]
+diff --git a/packages/emnapi/emnapi.gyp b/packages/emnapi/emnapi.gyp
+index 8af6858..fccb3fd 100644
+--- a/packages/emnapi/emnapi.gyp
++++ b/packages/emnapi/emnapi.gyp
+@@ -33,12 +33,10 @@
+         'src/malloc/emmalloc/emmalloc.c',
+       ],
+       'cflags': [ '-fno-strict-aliasing' ],
++      'xcode_settings': {
++        'GCC_STRICT_ALIASING': 'NO',
++      },
+       'conditions': [
+-        ['OS == "mac"', {
+-          'xcode_settings': {
+-            'GCC_STRICT_ALIASING': 'NO',
+-          }
+-        }],
+         ['wasm_threads != 0', {
+           'defines': [
+             '__EMSCRIPTEN_SHARED_MEMORY__=1'
+@@ -60,7 +58,7 @@
+       },
+       'link_settings': {
+         'target_conditions': [
+-          ['_type == "executable" and target_os == "emscripten"', {
++          ['_type == "executable" and OS == "emscripten"', {
+             'libraries': [
+               '--js-library=<!(node -p "require(\'emnapi\').js_library")',
+             ]
+@@ -68,7 +66,7 @@
+         ]
+       },
+       'conditions': [
+-        ['wasm_threads != 0 and target_os != "emscripten" and target_os != "wasi"', {
++        ['wasm_threads != 0 and OS != "emscripten" and OS != "wasi"', {
+           'sources': [
+             'src/thread/async_worker_create.c',
+             'src/thread/async_worker_init.S',
+@@ -100,7 +98,7 @@
+       },
+       'link_settings': {
+         'target_conditions': [
+-          ['_type == "executable" and target_os == "emscripten"', {
++          ['_type == "executable" and OS == "emscripten"', {
+             'libraries': [
+               '--js-library=<!(node -p "require(\'emnapi\').js_library")',
+             ]

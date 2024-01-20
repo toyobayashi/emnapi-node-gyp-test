@@ -8,8 +8,8 @@ export AR_target=emar
 export CC_target=emcc
 export CXX_target=em++
 
-emmake node-gyp rebuild --verbose --nodedir=./node_modules/emnapi -- -f make -Dcross_compiling=1
+emmake node-gyp rebuild --verbose --arch=wasm32 --nodedir=./node_modules/emnapi -- -f make -DOS=emscripten
 
 # node-gyp clean
-# node-gyp configure --nodedir=./node_modules/emnapi -- -f make -Dcross_compiling=1
+# node-gyp configure --nodedir=./node_modules/emnapi -- -f make -DOS=emscripten
 # emmake node-gyp build --verbose
