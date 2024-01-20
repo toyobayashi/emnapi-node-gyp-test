@@ -1,7 +1,7 @@
 From be4c08f356e11b3cf87a285dec34325832497d60 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 23:07:20 +0800
-Subject: [PATCH 1/4] feat: add basic gyp support
+Subject: [PATCH 1/5] feat: add basic gyp support
 
 ---
  packages/emnapi/common.gypi | 371 ++++++++++++++++++++++++++++++++++++
@@ -472,7 +472,7 @@ index 05424c6..2eb2bdb 100644
 From b7286b9409f3231701a778b1d108fb03f61ba161 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 00:09:25 +0800
-Subject: [PATCH 2/4] napi_build_version 9
+Subject: [PATCH 2/5] napi_build_version 9
 
 ---
  packages/emnapi/common.gypi | 2 +-
@@ -495,7 +495,7 @@ index cb9a18b..3463c5c 100644
 From f53d8229024409daf81c2593c76a5a62e2e06a5c Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 11:34:08 +0800
-Subject: [PATCH 3/4] update common.gypi
+Subject: [PATCH 3/5] update common.gypi
 
 ---
  packages/emnapi/common.gypi | 11 +++++------
@@ -553,7 +553,7 @@ index 3463c5c..b1f4788 100644
 From 972a03174759c6deb3b7e2955fa65bb2243e9ce7 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 11:34:29 +0800
-Subject: [PATCH 4/4] add emnapi static library targets
+Subject: [PATCH 4/5] add emnapi static library targets
 
 ---
  packages/emnapi/emnapi.gyp | 62 ++++++++++++++++++++++++++++++++++++++
@@ -632,3 +632,33 @@ index 4a97350..8af6858 100644
      }
    ]
  }
+
+From 2f8c2c914cbf991832c86823fba6b0ef8b6ca498 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sat, 20 Jan 2024 13:06:52 +0800
+Subject: [PATCH 5/5] product_extension%
+
+---
+ packages/emnapi/common.gypi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/emnapi/common.gypi b/packages/emnapi/common.gypi
+index b1f4788..539c12e 100644
+--- a/packages/emnapi/common.gypi
++++ b/packages/emnapi/common.gypi
+@@ -249,13 +249,13 @@
+         ],
+         'conditions': [
+           ['target_os == "emscripten"', {
+-            'product_extension': 'js',
++            'product_extension%': 'js',
+             'libraries': [
+               '--js-library=<!(node -p "require(\'emnapi\').js_library")',
+             ]
+           }, {
+             # not emscripten
+-            'product_extension': 'wasm',
++            'product_extension%': 'wasm',
+ 
+             'ldflags': [
+               '-Wl,--export-dynamic',
