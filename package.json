@@ -7,6 +7,8 @@
     "postinstall": "node ./scripts/patch.js",
     "build:win": "build.bat",
     "build:unix": "./build.sh",
+    "build-wasi:win": "build-wasi.bat",
+    "build-wasi:unix": "./build-wasi.sh",
     "start": "node ./main.js"
   },
   "dependencies": {
