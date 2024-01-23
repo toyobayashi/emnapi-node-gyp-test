@@ -30,7 +30,7 @@ jobs:
         - 'ON'
 
     env:
-      WASI_SDK_PATH: ${{ (matrix.os == 'windows-latest' && '%GITHUB_WORKSPACE%/wasi-sdk') || '$GITHUB_WORKSPACE/wasi-sdk' }}
+      WASI_SDK_PATH: ${{ env.GITHUB_WORKSPACE }}/wasi-sdk
       # WASI_SDK_PATH: ${{ (matrix.os == 'windows-latest' && 'C:/wasi-sdk') || (matrix.os == 'ubuntu-latest' && '/opt/wasi-sdk') || '/opt/wasi-sdk' }}
 
     steps:
