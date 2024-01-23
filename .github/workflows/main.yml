@@ -38,7 +38,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{env.EM_CACHE_FOLDER}}
-          key: ${{env.EM_VERSION}}-${{ runner.os }}-${{ matrix.target }}
+          key: ${{env.EM_VERSION}}-${{ runner.os }}-${{ matrix.target }}-${{ matrix.thread }}
       - uses: mymindstorm/setup-emsdk@v13
         if: ${{ contains(matrix.target, 'emscripten') }}
         with:
@@ -50,7 +50,7 @@ jobs:
         if: ${{ matrix.target == 'wasm32' || matrix.target == 'wasi' }}
         shell: bash
         run: |
-          wget -q https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
+          curl -OL https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
           mkdir -p $WASI_SDK_PATH
           tar zxvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz -C $WASI_SDK_PATH --strip 1
 
