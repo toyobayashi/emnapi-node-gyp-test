@@ -30,7 +30,8 @@ jobs:
         - 'ON'
 
     env:
-      WASI_SDK_PATH: ${{ (matrix.os == 'windows-latest' && 'C:/wasi-sdk') || '/opt/wasi-sdk' }}
+      WASI_SDK_PATH: ${{ (matrix.os == 'windows-latest' && '%GITHUB_WORKSPACE%/wasi-sdk') || '$GITHUB_WORKSPACE/wasi-sdk' }}
+      # WASI_SDK_PATH: ${{ (matrix.os == 'windows-latest' && 'C:/wasi-sdk') || (matrix.os == 'ubuntu-latest' && '/opt/wasi-sdk') || '/opt/wasi-sdk' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -62,7 +63,7 @@ jobs:
         run: |
           curl -OL https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}.m-mingw.tar.gz
           mkdir -p $WASI_SDK_PATH
-          tar zxvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz -C $WASI_SDK_PATH --strip 1
+          tar zxvf wasi-sdk-${WASI_VERSION_FULL}.m-mingw.tar.gz -C $WASI_SDK_PATH --strip 1
 
       - uses: actions/setup-node@v3
         with:
