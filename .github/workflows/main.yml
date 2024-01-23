@@ -8,7 +8,6 @@ on:
 env:
   WASI_VERSION: '21'
   WASI_VERSION_FULL: '21.0'
-  WASI_SDK_PATH: './wasi-sdk-21.0'
   EM_VERSION: '3.1.44'
   EM_CACHE_FOLDER: 'emsdk-cache'
 
@@ -30,6 +29,9 @@ jobs:
         - 'OFF'
         - 'ON'
 
+    env:
+      WASI_SDK_PATH: ${{ (matrix.os == 'windows-latest' && 'C:/wasi-sdk') || '/opt/wasi-sdk' }}
+
     steps:
       - uses: actions/checkout@v4
       - name: Setup Emscripten cache
@@ -47,10 +49,18 @@ jobs:
           actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
 
       - name: Install wasi-sdk
-        if: ${{ matrix.target == 'wasm32' || matrix.target == 'wasi' }}
+        if: ${{ (matrix.target == 'wasm32' || matrix.target == 'wasi') && matrix.os != 'windows-latest' }}
         shell: bash
         run: |
           curl -OL https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
+          mkdir -p $WASI_SDK_PATH
+          tar zxvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz -C $WASI_SDK_PATH --strip 1
+      
+      - name: Install wasi-sdk (Windows)
+        if: ${{ (matrix.target == 'wasm32' || matrix.target == 'wasi') && matrix.os == 'windows-latest' }}
+        shell: bash
+        run: |
+          curl -OL https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}.m-mingw.tar.gz
           mkdir -p $WASI_SDK_PATH
           tar zxvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz -C $WASI_SDK_PATH --strip 1
 
