@@ -11,6 +11,6 @@ set CXX_target=%WASI_SDK_PATH%/bin/clang++.exe
 call npx.cmd node-gyp clean -C %~dp0
 call npx.cmd node-gyp configure -C %~dp0 --arch=wasm32 --nodedir=%~dp0node_modules/emnapi -- -f make %*
 
-node %~dp0scripts/replace-sep.js
+@REM node %~dp0scripts/replace-sep.js
 
 call make -C %~dp0build V=1

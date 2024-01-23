@@ -11,6 +11,6 @@ set CXX_target=em++.bat
 call npx.cmd node-gyp clean -C %~dp0
 call npx.cmd node-gyp configure -C %~dp0 --arch=wasm32 --nodedir=%~dp0node_modules/emnapi -- -f make %*
 
-node %~dp0scripts/replace-sep.js
+@REM node %~dp0scripts/replace-sep.js
 
 call emmake.bat make -C %~dp0build V=1
