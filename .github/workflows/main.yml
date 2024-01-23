@@ -1,0 +1,68 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+env:
+  WASI_VERSION: '21'
+  WASI_VERSION_FULL: '21.0'
+  WASI_SDK_PATH: './wasi-sdk-21.0'
+  EM_VERSION: '3.1.44'
+  EM_CACHE_FOLDER: 'emsdk-cache'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - windows-latest
+        - ubuntu-latest
+        - macos-latest
+        target:
+        - 'emscripten'
+        - 'wasi'
+        - 'wasm32'
+        thread:
+        - 'OFF'
+        - 'ON'
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Emscripten cache
+        if: ${{ contains(matrix.target, 'emscripten') }}
+        id: cache-system-libraries
+        uses: actions/cache@v3
+        with:
+          path: ${{env.EM_CACHE_FOLDER}}
+          key: ${{env.EM_VERSION}}-${{ runner.os }}-${{ matrix.target }}
+      - uses: mymindstorm/setup-emsdk@v13
+        if: ${{ contains(matrix.target, 'emscripten') }}
+        with:
+          version: ${{ env.EM_VERSION }}
+          # no-cache: true
+          actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
+
+      - name: Install wasi-sdk
+        if: ${{ matrix.target == 'wasm32' || matrix.target == 'wasi' }}
+        shell: bash
+        run: |
+          wget -q https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
+          mkdir -p $WASI_SDK_PATH
+          tar zxvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz -C $WASI_SDK_PATH --strip 1
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.9.0'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: NPM Install
+        shell: bash
+        run: npm install
+  
+      - name: NPM Build
+        shell: bash
+        run: npm run build-${{ matrix.target }}${{ (matrix.thread == 'ON' && '-threads') || '' }}:${{ (matrix.os == 'windows-latest' && 'win') || 'unix' }}

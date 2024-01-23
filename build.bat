@@ -8,9 +8,9 @@ set AR_target=emar.bat
 set CC_target=emcc.bat
 set CXX_target=em++.bat
 
-call npx.cmd node-gyp clean
-call npx.cmd node-gyp configure --arch=wasm32 --nodedir=./node_modules/emnapi -- -f make -DOS=emscripten
+call npx.cmd node-gyp clean -C %~dp0
+call npx.cmd node-gyp configure -C %~dp0 --arch=wasm32 --nodedir=%~dp0node_modules/emnapi -- -f make %*
 
-node ./scripts/replace-sep.js
+node %~dp0scripts/replace-sep.js
 
-call emmake.bat make -C build V=1
+call emmake.bat make -C %~dp0build V=1

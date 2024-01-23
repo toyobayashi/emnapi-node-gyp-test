@@ -5,10 +5,18 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "node ./scripts/patch.js",
-    "build:win": "build.bat",
-    "build:unix": "./build.sh",
-    "build-wasi:win": "build-wasi.bat",
-    "build-wasi:unix": "./build-wasi.sh",
+    "build-emscripten:win": "build.bat -DOS=emscripten",
+    "build-emscripten-threads:win": "build.bat -DOS=emscripten -Dwasm_threads=1",
+    "build-wasi:win": "build-wasi.bat -DOS=wasi",
+    "build-wasi-threads:win": "build-wasi.bat -DOS=wasi -Dwasm_threads=1",
+    "build-wasm32:win": "build-wasi.bat -DOS=unknown",
+    "build-wasm32-threads:win": "build-wasi.bat -DOS=unknown -Dwasm_threads=1",
+    "build-emscripten:unix": "./build.sh -DOS=emscripten",
+    "build-emscripten-threads:unix": "./build.sh -DOS=emscripten -Dwasm_threads=1",
+    "build-wasi:unix": "./build-wasi.sh -DOS=wasi",
+    "build-wasi-threads:unix": "./build-wasi.sh -DOS=wasi -Dwasm_threads=1",
+    "build-wasm32:unix": "./build-wasi.sh -DOS=unknown",
+    "build-wasm32-threads:unix": "./build-wasi.sh -DOS=unknown -Dwasm_threads=1",
     "start": "node ./main.js"
   },
   "dependencies": {
