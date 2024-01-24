@@ -14,7 +14,7 @@ const ext = path.extname(entry)
 
 module.exports = function () {
   if (ext === '.js') {
-    return require(entry).then(Module => {
+    return require(entry)().then(Module => {
       return Module.emnapiInit({ context: emnapi.getDefaultContext() })
     })
   }
