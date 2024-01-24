@@ -1,7 +1,7 @@
 From be4c08f356e11b3cf87a285dec34325832497d60 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 23:07:20 +0800
-Subject: [PATCH 01/12] feat: add basic gyp support
+Subject: [PATCH 01/13] feat: add basic gyp support
 
 ---
  packages/emnapi/common.gypi | 371 ++++++++++++++++++++++++++++++++++++
@@ -472,7 +472,7 @@ index 05424c6..2eb2bdb 100644
 From b7286b9409f3231701a778b1d108fb03f61ba161 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 00:09:25 +0800
-Subject: [PATCH 02/12] napi_build_version 9
+Subject: [PATCH 02/13] napi_build_version 9
 
 ---
  packages/emnapi/common.gypi | 2 +-
@@ -495,7 +495,7 @@ index cb9a18b..3463c5c 100644
 From f53d8229024409daf81c2593c76a5a62e2e06a5c Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 11:34:08 +0800
-Subject: [PATCH 03/12] update common.gypi
+Subject: [PATCH 03/13] update common.gypi
 
 ---
  packages/emnapi/common.gypi | 11 +++++------
@@ -553,7 +553,7 @@ index 3463c5c..b1f4788 100644
 From 972a03174759c6deb3b7e2955fa65bb2243e9ce7 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 11:34:29 +0800
-Subject: [PATCH 04/12] add emnapi static library targets
+Subject: [PATCH 04/13] add emnapi static library targets
 
 ---
  packages/emnapi/emnapi.gyp | 62 ++++++++++++++++++++++++++++++++++++++
@@ -636,7 +636,7 @@ index 4a97350..8af6858 100644
 From 2f8c2c914cbf991832c86823fba6b0ef8b6ca498 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 13:06:52 +0800
-Subject: [PATCH 05/12] product_extension%
+Subject: [PATCH 05/13] product_extension%
 
 ---
  packages/emnapi/common.gypi | 4 ++--
@@ -666,7 +666,7 @@ index b1f4788..539c12e 100644
 From 99690cf7b370264c16f6486a28fa619cfe1ffd24 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 15:01:02 +0800
-Subject: [PATCH 06/12] use OS
+Subject: [PATCH 06/13] use OS
 
 ---
  packages/emnapi/common.gypi | 318 +++++++++++++++---------------------
@@ -1179,7 +1179,7 @@ index 8af6858..fccb3fd 100644
 From 3cb08236ac8ae3e45edb31de955905fdaf3c5260 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 19:38:57 +0800
-Subject: [PATCH 07/12] Revert "product_extension%"
+Subject: [PATCH 07/13] Revert "product_extension%"
 
 This reverts commit 2f8c2c914cbf991832c86823fba6b0ef8b6ca498.
 ---
@@ -1210,7 +1210,7 @@ index c249504..092b9f0 100644
 From df5d2a56cf499f6f4802f412ba727f844b937071 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 23 Jan 2024 21:56:18 +0800
-Subject: [PATCH 08/12] add config.gypi
+Subject: [PATCH 08/13] add config.gypi
 
 ---
  packages/emnapi/include/node/config.gypi | 5 +++++
@@ -1232,7 +1232,7 @@ index 0000000..c363c3a
 From b830729e03a588e907a858639879b13332750825 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 23 Jan 2024 21:58:30 +0800
-Subject: [PATCH 09/12] no require in gyp
+Subject: [PATCH 09/13] no require in gyp
 
 ---
  packages/emnapi/common.gypi | 21 ++++++++++++++++-----
@@ -1315,7 +1315,7 @@ index fccb3fd..d7b13c4 100644
 From e30ae4cf918be72b0521956c4eae0167ddcf2faf Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 23 Jan 2024 21:59:32 +0800
-Subject: [PATCH 10/12] align directory structure
+Subject: [PATCH 10/13] align directory structure
 
 ---
  packages/emnapi/CMakeLists.txt | 18 ++++++++++++------
@@ -1375,7 +1375,7 @@ index 9b6de68..5c09e4a 100644
 From 59e07a3b46af0072cc9465be0c2b0eda37e5502c Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 23 Jan 2024 22:44:30 +0800
-Subject: [PATCH 11/12] revert
+Subject: [PATCH 11/13] revert
 
 ---
  packages/emnapi/common.gypi | 4 ++--
@@ -1416,7 +1416,7 @@ index d7b13c4..f40fb58 100644
 From 9c99d454eb9498d36de808a6aa22fbeab50c2707 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 20:52:23 +0800
-Subject: [PATCH 12/12] specify `product_extension` explicitly on emscripten
+Subject: [PATCH 12/13] specify `product_extension` explicitly on emscripten
 
 ---
  packages/emnapi/common.gypi | 103 ++++++++++++++++--------------------
@@ -1578,3 +1578,276 @@ index 4652363..55b5655 100644
                  ]
                }],
              ]
+
+From 373a5614a0a0752fdc5b0b5a6172c70dc984be83 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Wed, 24 Jan 2024 21:30:30 +0800
+Subject: [PATCH 13/13] breaking change: change include directory structure
+
+---
+ .gitignore                                     |  1 -
+ .vscode/c_cpp_properties.json                  |  2 +-
+ packages/emnapi/CMakeLists.txt                 | 18 +++++++++---------
+ packages/emnapi/README.md                      | 12 ++++++------
+ packages/emnapi/common.gypi                    |  4 ----
+ packages/emnapi/emnapi.gyp                     |  6 ------
+ packages/emnapi/include/{ => node}/emnapi.h    |  0
+ .../emnapi/include/{ => node}/emnapi_common.h  |  0
+ .../emnapi/include/{ => node}/js_native_api.h  |  0
+ .../include/{ => node}/js_native_api_types.h   |  0
+ packages/emnapi/include/{ => node}/node_api.h  |  0
+ .../emnapi/include/{ => node}/node_api_types.h |  0
+ packages/emnapi/include/{ => node}/uv.h        |  0
+ .../emnapi/include/{ => node}/uv/threadpool.h  |  0
+ packages/emnapi/include/{ => node}/uv/unix.h   |  0
+ packages/emnapi/index.js                       |  2 +-
+ packages/emnapi/script/version.js              |  2 +-
+ packages/test/CMakeLists.txt                   |  2 +-
+ 18 files changed, 19 insertions(+), 30 deletions(-)
+ rename packages/emnapi/include/{ => node}/emnapi.h (100%)
+ rename packages/emnapi/include/{ => node}/emnapi_common.h (100%)
+ rename packages/emnapi/include/{ => node}/js_native_api.h (100%)
+ rename packages/emnapi/include/{ => node}/js_native_api_types.h (100%)
+ rename packages/emnapi/include/{ => node}/node_api.h (100%)
+ rename packages/emnapi/include/{ => node}/node_api_types.h (100%)
+ rename packages/emnapi/include/{ => node}/uv.h (100%)
+ rename packages/emnapi/include/{ => node}/uv/threadpool.h (100%)
+ rename packages/emnapi/include/{ => node}/uv/unix.h (100%)
+
+diff --git a/.gitignore b/.gitignore
+index ca66ca2..8a7fbf4 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,7 +6,6 @@
+ /test/CMakefiles
+ node_modules
+ !example/node_modules
+-/include/node_api_full.h
+ package-lock.json
+ /example/build
+ out
+diff --git a/.vscode/c_cpp_properties.json b/.vscode/c_cpp_properties.json
+index 58412f2..7fb86f0 100644
+--- a/.vscode/c_cpp_properties.json
++++ b/.vscode/c_cpp_properties.json
+@@ -3,7 +3,7 @@
+     "includePath": [
+       "${default}",
+       // "${env:USERPROFILE}/AppData/Local/node-gyp/Cache/16.15.0/include/node"
+-      "${workspaceFolder}/packages/emnapi/include",
++      "${workspaceFolder}/packages/emnapi/include/node",
+       "${workspaceFolder}/node_modules/node-addon-api"
+     ],
+     "defines": ["NAPI_DISABLE_CPP_EXCEPTIONS", "NODE_ADDON_API_ENABLE_MAYBE"],
+diff --git a/packages/emnapi/CMakeLists.txt b/packages/emnapi/CMakeLists.txt
+index 5c09e4a..a03cbec 100644
+--- a/packages/emnapi/CMakeLists.txt
++++ b/packages/emnapi/CMakeLists.txt
+@@ -38,7 +38,7 @@ set(EMNAPI_THREADS_SRC
+ )
+ set(EMNAPI_SRC ${ENAPI_BASIC_SRC} ${EMNAPI_THREADS_SRC})
+ 
+-set(EMNAPI_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/include")
++set(EMNAPI_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/include/node")
+ set(EMNAPI_DEFINES "BUILDING_NODE_EXTENSION")
+ 
+ set(EMNAPI_JS_LIB "${CMAKE_CURRENT_SOURCE_DIR}/dist/library_napi.js")
+@@ -214,18 +214,18 @@ install(FILES
+   DESTINATION ".")
+ 
+ install(FILES
+-    ${CMAKE_CURRENT_SOURCE_DIR}/include/emnapi_common.h
+-    ${CMAKE_CURRENT_SOURCE_DIR}/include/emnapi.h
+-    ${CMAKE_CURRENT_SOURCE_DIR}/include/js_native_api_types.h
+-    ${CMAKE_CURRENT_SOURCE_DIR}/include/js_native_api.h
+-    ${CMAKE_CURRENT_SOURCE_DIR}/include/node_api_types.h
+-    ${CMAKE_CURRENT_SOURCE_DIR}/include/node_api.h
+-    ${CMAKE_CURRENT_SOURCE_DIR}/include/uv.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/node/emnapi_common.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/node/emnapi.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/node/js_native_api_types.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/node/js_native_api.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/node/node_api_types.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/node/node_api.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/node/uv.h
+     ${CMAKE_CURRENT_SOURCE_DIR}/include/node/config.gypi
+   DESTINATION "include/node")
+ 
+ install(DIRECTORY
+-  ${CMAKE_CURRENT_SOURCE_DIR}/include/uv
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/node/uv
+   DESTINATION "include/node")
+ 
+ install(FILES
+diff --git a/packages/emnapi/README.md b/packages/emnapi/README.md
+index 7e0a0ab..071cbfd 100644
+--- a/packages/emnapi/README.md
++++ b/packages/emnapi/README.md
+@@ -167,7 +167,7 @@ module.exports = (function (exports) {
+ emcc -O3 \
+      -DBUILDING_NODE_EXTENSION \
+      "-DNAPI_EXTERN=__attribute__((__import_module__(\"env\")))" \
+-     -I./node_modules/emnapi/include \
++     -I./node_modules/emnapi/include/node \
+      -L./node_modules/emnapi/lib/wasm32-emscripten \
+      --js-library=./node_modules/emnapi/dist/library_napi.js \
+      -sEXPORTED_FUNCTIONS="['_malloc','_free','_napi_register_wasm_v1','_node_api_module_get_api_version_v1']" \
+@@ -184,7 +184,7 @@ emcc -O3 \
+ ```bash
+ clang -O3 \
+       -DBUILDING_NODE_EXTENSION \
+-      -I./node_modules/emnapi/include \
++      -I./node_modules/emnapi/include/node \
+       -L./node_modules/emnapi/lib/wasm32-wasi \
+       --target=wasm32-wasi \
+       --sysroot=$WASI_SDK_PATH/share/wasi-sysroot \
+@@ -212,7 +212,7 @@ Choose `libdlmalloc.a` or `libemmalloc.a` for `malloc` and `free`.
+ ```bash
+ clang -O3 \
+       -DBUILDING_NODE_EXTENSION \
+-      -I./node_modules/emnapi/include \
++      -I./node_modules/emnapi/include/node \
+       -L./node_modules/emnapi/lib/wasm32 \
+       --target=wasm32 \
+       -nostdlib \
+@@ -456,7 +456,7 @@ em++ -O3 \
+      "-DNAPI_EXTERN=__attribute__((__import_module__(\"env\")))" \
+      -DNAPI_DISABLE_CPP_EXCEPTIONS \
+      -DNODE_ADDON_API_ENABLE_MAYBE \
+-     -I./node_modules/emnapi/include \
++     -I./node_modules/emnapi/include/node \
+      -I./node_modules/node-addon-api \
+      -L./node_modules/emnapi/lib/wasm32-emscripten \
+      --js-library=./node_modules/emnapi/dist/library_napi.js \
+@@ -476,7 +476,7 @@ clang++ -O3 \
+         -DBUILDING_NODE_EXTENSION \
+         -DNAPI_DISABLE_CPP_EXCEPTIONS \
+         -DNODE_ADDON_API_ENABLE_MAYBE \
+-        -I./node_modules/emnapi/include \
++        -I./node_modules/emnapi/include/node \
+         -I./node_modules/node-addon-api \
+         -L./node_modules/emnapi/lib/wasm32-wasi \
+         --target=wasm32-wasi \
+@@ -508,7 +508,7 @@ You can still use `wasm32-unknown-unknown` target if you use Node-API C API only
+ ```bash
+ clang++ -O3 \
+         -DBUILDING_NODE_EXTENSION \
+-        -I./node_modules/emnapi/include \
++        -I./node_modules/emnapi/include/node \
+         -L./node_modules/emnapi/lib/wasm32 \
+         --target=wasm32 \
+         -fno-exceptions \
+diff --git a/packages/emnapi/common.gypi b/packages/emnapi/common.gypi
+index 55b5655..4b893ee 100644
+--- a/packages/emnapi/common.gypi
++++ b/packages/emnapi/common.gypi
+@@ -64,10 +64,6 @@
+       }
+     },
+ 
+-    'include_dirs+': [
+-      'include',
+-    ],
+-
+     'conditions': [
+       ['OS == "emscripten"', {
+         'defines': [
+diff --git a/packages/emnapi/emnapi.gyp b/packages/emnapi/emnapi.gyp
+index f40fb58..00a3dfa 100644
+--- a/packages/emnapi/emnapi.gyp
++++ b/packages/emnapi/emnapi.gyp
+@@ -53,9 +53,6 @@
+         'src/async_cleanup_hook.c',
+         'src/async_context.c',
+       ],
+-      'direct_dependent_settings': {
+-        'include_dirs+': [ 'include' ],
+-      },
+       'link_settings': {
+         'target_conditions': [
+           ['_type == "executable" and OS == "emscripten"', {
+@@ -93,9 +90,6 @@
+         'src/async_work.c',
+         'src/threadsafe_function.c',
+       ],
+-      'direct_dependent_settings': {
+-        'include_dirs+': [ 'include' ],
+-      },
+       'link_settings': {
+         'target_conditions': [
+           ['_type == "executable" and OS == "emscripten"', {
+diff --git a/packages/emnapi/include/emnapi.h b/packages/emnapi/include/node/emnapi.h
+similarity index 100%
+rename from packages/emnapi/include/emnapi.h
+rename to packages/emnapi/include/node/emnapi.h
+diff --git a/packages/emnapi/include/emnapi_common.h b/packages/emnapi/include/node/emnapi_common.h
+similarity index 100%
+rename from packages/emnapi/include/emnapi_common.h
+rename to packages/emnapi/include/node/emnapi_common.h
+diff --git a/packages/emnapi/include/js_native_api.h b/packages/emnapi/include/node/js_native_api.h
+similarity index 100%
+rename from packages/emnapi/include/js_native_api.h
+rename to packages/emnapi/include/node/js_native_api.h
+diff --git a/packages/emnapi/include/js_native_api_types.h b/packages/emnapi/include/node/js_native_api_types.h
+similarity index 100%
+rename from packages/emnapi/include/js_native_api_types.h
+rename to packages/emnapi/include/node/js_native_api_types.h
+diff --git a/packages/emnapi/include/node_api.h b/packages/emnapi/include/node/node_api.h
+similarity index 100%
+rename from packages/emnapi/include/node_api.h
+rename to packages/emnapi/include/node/node_api.h
+diff --git a/packages/emnapi/include/node_api_types.h b/packages/emnapi/include/node/node_api_types.h
+similarity index 100%
+rename from packages/emnapi/include/node_api_types.h
+rename to packages/emnapi/include/node/node_api_types.h
+diff --git a/packages/emnapi/include/uv.h b/packages/emnapi/include/node/uv.h
+similarity index 100%
+rename from packages/emnapi/include/uv.h
+rename to packages/emnapi/include/node/uv.h
+diff --git a/packages/emnapi/include/uv/threadpool.h b/packages/emnapi/include/node/uv/threadpool.h
+similarity index 100%
+rename from packages/emnapi/include/uv/threadpool.h
+rename to packages/emnapi/include/node/uv/threadpool.h
+diff --git a/packages/emnapi/include/uv/unix.h b/packages/emnapi/include/node/uv/unix.h
+similarity index 100%
+rename from packages/emnapi/include/uv/unix.h
+rename to packages/emnapi/include/node/uv/unix.h
+diff --git a/packages/emnapi/index.js b/packages/emnapi/index.js
+index 2eb2bdb..3a9a086 100644
+--- a/packages/emnapi/index.js
++++ b/packages/emnapi/index.js
+@@ -3,7 +3,7 @@ Object.defineProperty(exports, '__esModule', { value: true })
+ 
+ const path = require('path')
+ 
+-const include = path.join(__dirname, 'include')
++const include = path.join(__dirname, 'include/node')
+ const includeDir = path.relative(process.cwd(), include)
+ const jsLibrary = path.join(__dirname, './dist/library_napi.js').replace(/\\|\\\\/g, '/')
+ const sources = [
+diff --git a/packages/emnapi/script/version.js b/packages/emnapi/script/version.js
+index 8b6eda7..cf8dc64 100644
+--- a/packages/emnapi/script/version.js
++++ b/packages/emnapi/script/version.js
+@@ -3,7 +3,7 @@ const path = require('path')
+ 
+ async function main () {
+   const [major, minor, patch] = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')).version.split('.').map(Number)
+-  const headerPath = path.join(__dirname, '../include/emnapi.h')
++  const headerPath = path.join(__dirname, '../include/node/emnapi.h')
+   const emnapiHeader = fs.readFileSync(headerPath, 'utf8')
+   fs.writeFileSync(
+     headerPath,
+diff --git a/packages/test/CMakeLists.txt b/packages/test/CMakeLists.txt
+index 4b4c429..5d033b8 100644
+--- a/packages/test/CMakeLists.txt
++++ b/packages/test/CMakeLists.txt
+@@ -58,7 +58,7 @@ endif()
+ math(EXPR PTHREAD_POOL_SIZE "${UV_THREADPOOL_SIZE} * 4")
+ 
+ if(IS_WASM)
+-  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../emnapi/include")
++  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../emnapi/include/node")
+ else()
+   include_directories(${CMAKE_JS_INC})
+   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../node_modules/node-addon-api")
