@@ -22,7 +22,7 @@
   "dependencies": {
     "@emnapi/core": "0.45.0",
     "@emnapi/runtime": "0.45.0",
-    "emnapi": "0.45.0"
+    "emnapi": "file:./deps/emnapi.tgz"
   },
   "devDependencies": {
     "node-gyp": "10.0.1"
