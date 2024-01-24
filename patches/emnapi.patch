@@ -1,7 +1,7 @@
 From be4c08f356e11b3cf87a285dec34325832497d60 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 23:07:20 +0800
-Subject: [PATCH 01/11] feat: add basic gyp support
+Subject: [PATCH 01/12] feat: add basic gyp support
 
 ---
  packages/emnapi/common.gypi | 371 ++++++++++++++++++++++++++++++++++++
@@ -472,7 +472,7 @@ index 05424c6..2eb2bdb 100644
 From b7286b9409f3231701a778b1d108fb03f61ba161 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 00:09:25 +0800
-Subject: [PATCH 02/11] napi_build_version 9
+Subject: [PATCH 02/12] napi_build_version 9
 
 ---
  packages/emnapi/common.gypi | 2 +-
@@ -495,7 +495,7 @@ index cb9a18b..3463c5c 100644
 From f53d8229024409daf81c2593c76a5a62e2e06a5c Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 11:34:08 +0800
-Subject: [PATCH 03/11] update common.gypi
+Subject: [PATCH 03/12] update common.gypi
 
 ---
  packages/emnapi/common.gypi | 11 +++++------
@@ -553,7 +553,7 @@ index 3463c5c..b1f4788 100644
 From 972a03174759c6deb3b7e2955fa65bb2243e9ce7 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 11:34:29 +0800
-Subject: [PATCH 04/11] add emnapi static library targets
+Subject: [PATCH 04/12] add emnapi static library targets
 
 ---
  packages/emnapi/emnapi.gyp | 62 ++++++++++++++++++++++++++++++++++++++
@@ -636,7 +636,7 @@ index 4a97350..8af6858 100644
 From 2f8c2c914cbf991832c86823fba6b0ef8b6ca498 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 13:06:52 +0800
-Subject: [PATCH 05/11] product_extension%
+Subject: [PATCH 05/12] product_extension%
 
 ---
  packages/emnapi/common.gypi | 4 ++--
@@ -666,7 +666,7 @@ index b1f4788..539c12e 100644
 From 99690cf7b370264c16f6486a28fa619cfe1ffd24 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 15:01:02 +0800
-Subject: [PATCH 06/11] use OS
+Subject: [PATCH 06/12] use OS
 
 ---
  packages/emnapi/common.gypi | 318 +++++++++++++++---------------------
@@ -1179,7 +1179,7 @@ index 8af6858..fccb3fd 100644
 From 3cb08236ac8ae3e45edb31de955905fdaf3c5260 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sat, 20 Jan 2024 19:38:57 +0800
-Subject: [PATCH 07/11] Revert "product_extension%"
+Subject: [PATCH 07/12] Revert "product_extension%"
 
 This reverts commit 2f8c2c914cbf991832c86823fba6b0ef8b6ca498.
 ---
@@ -1210,7 +1210,7 @@ index c249504..092b9f0 100644
 From df5d2a56cf499f6f4802f412ba727f844b937071 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 23 Jan 2024 21:56:18 +0800
-Subject: [PATCH 08/11] add config.gypi
+Subject: [PATCH 08/12] add config.gypi
 
 ---
  packages/emnapi/include/node/config.gypi | 5 +++++
@@ -1232,7 +1232,7 @@ index 0000000..c363c3a
 From b830729e03a588e907a858639879b13332750825 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 23 Jan 2024 21:58:30 +0800
-Subject: [PATCH 09/11] no require in gyp
+Subject: [PATCH 09/12] no require in gyp
 
 ---
  packages/emnapi/common.gypi | 21 ++++++++++++++++-----
@@ -1315,7 +1315,7 @@ index fccb3fd..d7b13c4 100644
 From e30ae4cf918be72b0521956c4eae0167ddcf2faf Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 23 Jan 2024 21:59:32 +0800
-Subject: [PATCH 10/11] align directory structure
+Subject: [PATCH 10/12] align directory structure
 
 ---
  packages/emnapi/CMakeLists.txt | 18 ++++++++++++------
@@ -1375,7 +1375,7 @@ index 9b6de68..5c09e4a 100644
 From 59e07a3b46af0072cc9465be0c2b0eda37e5502c Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 23 Jan 2024 22:44:30 +0800
-Subject: [PATCH 11/11] revert
+Subject: [PATCH 11/12] revert
 
 ---
  packages/emnapi/common.gypi | 4 ++--
@@ -1412,3 +1412,169 @@ index d7b13c4..f40fb58 100644
              ]
            }],
          ]
+
+From 9c99d454eb9498d36de808a6aa22fbeab50c2707 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Wed, 24 Jan 2024 20:52:23 +0800
+Subject: [PATCH 12/12] specify `product_extension` explicitly on emscripten
+
+---
+ packages/emnapi/common.gypi | 103 ++++++++++++++++--------------------
+ 1 file changed, 47 insertions(+), 56 deletions(-)
+
+diff --git a/packages/emnapi/common.gypi b/packages/emnapi/common.gypi
+index 4652363..55b5655 100644
+--- a/packages/emnapi/common.gypi
++++ b/packages/emnapi/common.gypi
+@@ -132,8 +132,8 @@
+             },
+           }],
+         ],
+-      }, {
+-        # not emscripten
++      }], 
++      ['OS == "" or OS == "wasi" or OS == "unknown"', {
+         'configurations': {
+           'Release': {
+             'ldflags': [ '-Wl,--strip-debug' ],
+@@ -142,7 +142,7 @@
+             },
+           }
+         },
+-        
++
+         'conditions': [
+           ['wasm_threads != 0', {
+             'cflags': [ "-matomics", "-mbulk-memory" ],
+@@ -179,21 +179,17 @@
+               }],
+             ],
+           }, {
+-            'conditions': [
+-              ['OS == "unknown" or OS == ""', {
+-                # wasm32-unknown-unknown
+-                'cflags': [ '--target=wasm32-unknown-unknown' ],
+-                'ldflags': [
+-                  '--target=wasm32-unknown-unknown',
+-                ],
+-                'xcode_settings': {
+-                  'WARNING_CFLAGS': [ '--target=wasm32-unknown-unknown' ],
+-                  'OTHER_LDFLAGS': [
+-                    '--target=wasm32-unknown-unknown',
+-                  ],
+-                },
+-              }]
++            # wasm32-unknown-unknown
++            'cflags': [ '--target=wasm32-unknown-unknown' ],
++            'ldflags': [
++              '--target=wasm32-unknown-unknown',
+             ],
++            'xcode_settings': {
++              'WARNING_CFLAGS': [ '--target=wasm32-unknown-unknown' ],
++              'OTHER_LDFLAGS': [
++                '--target=wasm32-unknown-unknown',
++              ],
++            },
+           }],
+         ]
+       }],
+@@ -217,13 +213,12 @@
+         ],
+         'conditions': [
+           ['OS == "emscripten"', {
+-            'product_extension': 'js',
+             'libraries': [
+               '--js-library=<!(node -p "require(\'emnapi\').js_library")',
+               # '--js-library=<(node_root_dir)/dist/library_napi.js',
+             ]
+-          }, {
+-            # not emscripten
++          }],
++          ['OS == "" or OS == "wasi" or OS == "unknown"', {
+             'product_extension': 'wasm',
+ 
+             'ldflags': [
+@@ -271,51 +266,47 @@
+                   ]
+                 },
+               }],
+-              ['OS == "wasi"', {}, {
++              ['OS != "wasi"', {
++                'defines': [
++                  'PAGESIZE=65536'
++                ],
++                'ldflags': [
++                  '-nostdlib',
++                  '-Wl,--no-entry',
++                ],
++                'xcode_settings': {
++                  'OTHER_LDFLAGS': [
++                    '-nostdlib',
++                    '-Wl,--no-entry',
++                  ],
++                },
++                'sources': [
++                  'src/malloc/sbrk.c',
++                  'src/malloc/memcpy.c',
++                  'src/malloc/memset.c',
++                  'src/malloc/dlmalloc/dlmalloc.c',
++                ],
+                 'conditions': [
+-                  ['OS == "unknown" or OS == ""', {
++                  ['wasm_threads != 0', {
++                    # wasm32 + threads
++                    'sources': [
++                      'src/thread/async_worker_create.c',
++                      'src/thread/async_worker_init.S',
++                    ],
+                     'defines': [
+-                      'PAGESIZE=65536'
++                      'USE_LOCKS=1'
+                     ],
+                     'ldflags': [
+-                      '-nostdlib',
+-                      '-Wl,--no-entry',
++                      '-Wl,--export=emnapi_async_worker_create',
++                      '-Wl,--export=emnapi_async_worker_init',
+                     ],
+                     'xcode_settings': {
+                       'OTHER_LDFLAGS': [
+-                        '-nostdlib',
+-                        '-Wl,--no-entry',
++                        '-Wl,--export=emnapi_async_worker_create',
++                        '-Wl,--export=emnapi_async_worker_init',
+                       ],
+                     },
+-                    'sources': [
+-                      'src/malloc/sbrk.c',
+-                      'src/malloc/memcpy.c',
+-                      'src/malloc/memset.c',
+-                      'src/malloc/dlmalloc/dlmalloc.c',
+-                    ],
+-                    'conditions': [
+-                      ['wasm_threads != 0', {
+-                        # wasm32 + threads
+-                        'sources': [
+-                          'src/thread/async_worker_create.c',
+-                          'src/thread/async_worker_init.S',
+-                        ],
+-                        'defines': [
+-                          'USE_LOCKS=1'
+-                        ],
+-                        'ldflags': [
+-                          '-Wl,--export=emnapi_async_worker_create',
+-                          '-Wl,--export=emnapi_async_worker_init',
+-                        ],
+-                        'xcode_settings': {
+-                          'OTHER_LDFLAGS': [
+-                            '-Wl,--export=emnapi_async_worker_create',
+-                            '-Wl,--export=emnapi_async_worker_init',
+-                          ],
+-                        },
+-                      }],
+-                    ]
+-                  }]
++                  }],
+                 ]
+               }],
+             ]

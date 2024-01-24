@@ -9,7 +9,7 @@
         [
           "OS == 'emscripten'",
           {
-            "target_name": "binding.node",
+            "product_extension": "node.js",
             "ldflags": [
               '-sMODULARIZE=1',
               '-sEXPORT_NAME=binding'
