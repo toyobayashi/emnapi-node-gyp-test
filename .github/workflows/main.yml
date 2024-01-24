@@ -85,3 +85,6 @@ jobs:
       - name: NPM Build
         shell: bash
         run: npm run build-${{ matrix.target }}${{ (matrix.thread == 'ON' && '-threads') || '' }}:${{ (matrix.os == 'windows-latest' && 'win') || 'unix' }}
+      
+      - name: NPM Start
+        run: npm start

@@ -1,14 +1,38 @@
 const path = require('path')
+const fs = require('fs')
 const emnapi = require('@emnapi/runtime')
 
-const ext = path.extname(require.resolve('./build/Release/binding.node'))
-const init = require('./build/Release/binding.node')
+const entry = (() => {
+  try {
+    return require.resolve('./build/Release/binding.node')
+  } catch (_) {
+    return require.resolve('./build/Release/binding.wasm')
+  }
+})()
+
+const ext = path.extname(entry)
 
 module.exports = function () {
   if (ext === '.js') {
-    return init().then(Module => {
+    return require(entry).then(Module => {
       return Module.emnapiInit({ context: emnapi.getDefaultContext() })
     })
   }
-  return Promise.resolve().then(() => init)
+  if (ext === '.node') {
+    return Promise.resolve().then(() => require(entry))
+  }
+  if (ext === '.wasm') {
+    const { instantiateNapiModule } = require('@emnapi/core')
+    return instantiateNapiModule(fs.readFileSync(entry), {
+      context: emnapi.getDefaultContext(),
+      wasi: new (require('wasi').WASI)({ version: 'preview1' }),
+      overwriteImports (imports) {
+        imports.env.memory = new WebAssembly.Memory({
+          initial: 16777216 / 65536,
+          maximum: 2147483648 / 65536,
+          shared: true
+        })
+      }
+    }).then(({ napiModule }) => napiModule.exports)
+  }
 }

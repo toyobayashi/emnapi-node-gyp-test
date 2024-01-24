@@ -3,7 +3,8 @@
     {
       "target_name": "binding",
       "sources": [
-        "src/binding.c"
+        "src/binding.c",
+        "src/hello.cpp",
       ],
       "conditions": [
         [
