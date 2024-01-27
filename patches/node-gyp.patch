@@ -1,7 +1,7 @@
 From 6c9a795c263d3b68b5d1598dfa484ce3e111e7da Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 22:55:37 +0800
-Subject: [PATCH 1/4] fix: support cross compiling for wasm with make generator
+Subject: [PATCH 1/7] fix: support cross compiling for wasm with make generator
 
 ---
  pylib/gyp/generator/make.py | 15 ++++++++++++---
@@ -57,7 +57,7 @@ index 1b99749..e6e95a3 100644
 From 326246b749c5697d1a829c36c06e042cf2417450 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 12:39:23 +0800
-Subject: [PATCH 2/4] fix: lint
+Subject: [PATCH 2/7] fix: lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -93,7 +93,7 @@ index e6e95a3..3036a08 100644
 From 9bc78054b675b320bb980de14cabd0a2240d2ac9 Mon Sep 17 00:00:00 2001
 From: Toyo Li <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 21:04:38 +0800
-Subject: [PATCH 3/4] refactor for readability
+Subject: [PATCH 3/7] refactor for readability
 
 Co-authored-by: Christian Clauss <cclauss@me.com>
 ---
@@ -123,7 +123,7 @@ index 3036a08..ba9be4b 100644
 From 882c1f9bdb3774dc686ba84ac047ab0abd64f70a Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 00:09:08 +0800
-Subject: [PATCH 4/4] replace separator in make generator on Windows
+Subject: [PATCH 4/7] replace separator in make generator on Windows
 
 ---
  pylib/gyp/generator/make.py | 7 ++++++-
@@ -160,3 +160,122 @@ index ba9be4b..f058936 100644
 +            value_list = [ReplaceSep(quoter(prefix + value)) for value in value_list]
              values = " \\\n\t" + " \\\n\t".join(value_list)
          self.fp.write(f"{variable} :={values}\n\n")
+ 
+
+From 82d5d76bdcae91760aab25a582ad726974c99936 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Wed, 24 Jan 2024 09:02:09 +0800
+Subject: [PATCH 5/7] snake_case
+
+---
+ pylib/gyp/generator/make.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index f058936..f25800f 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -725,7 +725,7 @@ def QuoteIfNecessary(string):
+         string = '"' + string.replace('"', '\\"') + '"'
+     return string
+ 
+-def ReplaceSep(string):
++def replace_sep(string):
+     if sys.platform == 'win32':
+         string = string.replace('\\', '/')
+     return string
+@@ -2074,7 +2074,7 @@ def WriteList(self, value_list, variable=None, prefix="", quoter=QuoteIfNecessar
+         """
+         values = ""
+         if value_list:
+-            value_list = [ReplaceSep(quoter(prefix + value)) for value in value_list]
++            value_list = [replace_sep(quoter(prefix + value)) for value in value_list]
+             values = " \\\n\t" + " \\\n\t".join(value_list)
+         self.fp.write(f"{variable} :={values}\n\n")
+ 
+
+From 6a757fc3e38f50d0e294a6e369c42a53a4a382bb Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sun, 28 Jan 2024 00:55:29 +0800
+Subject: [PATCH 6/7] found more place to replace sep
+
+---
+ pylib/gyp/generator/make.py | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index f25800f..5635299 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -727,7 +727,7 @@ def QuoteIfNecessary(string):
+ 
+ def replace_sep(string):
+     if sys.platform == 'win32':
+-        string = string.replace('\\', '/')
++        string = string.replace('\\\\', '/').replace('\\', '/')
+     return string
+ 
+ def StringToMakefileVariable(string):
+@@ -864,13 +864,7 @@ def Write(
+             self.output = self.ComputeMacBundleOutput(spec)
+             self.output_binary = self.ComputeMacBundleBinaryOutput(spec)
+         else:
+-            if self.flavor == "win":
+-                # prevent from generating copy targets on Windows
+-                self.output = self.output_binary = self.ComputeOutput(spec).replace(
+-                    '\\', '/'
+-                )
+-            else:
+-                self.output = self.output_binary = self.ComputeOutput(spec)
++            self.output = self.output_binary = replace_sep(self.ComputeOutput(spec))
+ 
+         self.is_standalone_static_library = bool(
+             spec.get("standalone_static_library", 0)
+@@ -996,7 +990,7 @@ def WriteSubMake(self, output_filename, makefile_path, targets, build_dir):
+         # sub-project dir (see test/subdirectory/gyptest-subdir-all.py).
+         self.WriteLn(
+             "export builddir_name ?= %s"
+-            % os.path.join(os.path.dirname(output_filename), build_dir)
++            % replace_sep(os.path.join(os.path.dirname(output_filename), build_dir))
+         )
+         self.WriteLn(".PHONY: all")
+         self.WriteLn("all:")
+@@ -2380,10 +2374,10 @@ def WriteAutoRegenerationRule(params, root_makefile, makefile_name, build_files)
+         "\t$(call do_cmd,regen_makefile)\n\n"
+         % {
+             "makefile_name": makefile_name,
+-            "deps": " ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files),
+-            "cmd": gyp.common.EncodePOSIXShellList(
++            "deps": replace_sep(" ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files)),
++            "cmd": replace_sep(gyp.common.EncodePOSIXShellList(
+                 [gyp_binary, "-fmake"] + gyp.RegenerateFlags(options) + build_files_args
+-            ),
++            )),
+         }
+     )
+ 
+
+From 7fd6b7eb74e5305ff77afd2ba85cc652de82dd1d Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sun, 28 Jan 2024 00:58:45 +0800
+Subject: [PATCH 7/7] lint
+
+---
+ pylib/gyp/generator/make.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index 5635299..ab1a120 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -2374,7 +2374,9 @@ def WriteAutoRegenerationRule(params, root_makefile, makefile_name, build_files)
+         "\t$(call do_cmd,regen_makefile)\n\n"
+         % {
+             "makefile_name": makefile_name,
+-            "deps": replace_sep(" ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files)),
++            "deps": replace_sep(
++                " ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files)
++            ),
+             "cmd": replace_sep(gyp.common.EncodePOSIXShellList(
+                 [gyp_binary, "-fmake"] + gyp.RegenerateFlags(options) + build_files_args
+             )),
