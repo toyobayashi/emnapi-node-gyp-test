@@ -1,7 +1,7 @@
 From 6c9a795c263d3b68b5d1598dfa484ce3e111e7da Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 22:55:37 +0800
-Subject: [PATCH 1/7] fix: support cross compiling for wasm with make generator
+Subject: [PATCH 1/8] fix: support cross compiling for wasm with make generator
 
 ---
  pylib/gyp/generator/make.py | 15 ++++++++++++---
@@ -57,7 +57,7 @@ index 1b99749..e6e95a3 100644
 From 326246b749c5697d1a829c36c06e042cf2417450 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 12:39:23 +0800
-Subject: [PATCH 2/7] fix: lint
+Subject: [PATCH 2/8] fix: lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -93,7 +93,7 @@ index e6e95a3..3036a08 100644
 From 9bc78054b675b320bb980de14cabd0a2240d2ac9 Mon Sep 17 00:00:00 2001
 From: Toyo Li <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 21:04:38 +0800
-Subject: [PATCH 3/7] refactor for readability
+Subject: [PATCH 3/8] refactor for readability
 
 Co-authored-by: Christian Clauss <cclauss@me.com>
 ---
@@ -123,7 +123,7 @@ index 3036a08..ba9be4b 100644
 From 882c1f9bdb3774dc686ba84ac047ab0abd64f70a Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 00:09:08 +0800
-Subject: [PATCH 4/7] replace separator in make generator on Windows
+Subject: [PATCH 4/8] replace separator in make generator on Windows
 
 ---
  pylib/gyp/generator/make.py | 7 ++++++-
@@ -165,7 +165,7 @@ index ba9be4b..f058936 100644
 From 82d5d76bdcae91760aab25a582ad726974c99936 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 09:02:09 +0800
-Subject: [PATCH 5/7] snake_case
+Subject: [PATCH 5/8] snake_case
 
 ---
  pylib/gyp/generator/make.py | 4 ++--
@@ -197,7 +197,7 @@ index f058936..f25800f 100644
 From 6a757fc3e38f50d0e294a6e369c42a53a4a382bb Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:55:29 +0800
-Subject: [PATCH 6/7] found more place to replace sep
+Subject: [PATCH 6/8] found more place to replace sep
 
 ---
  pylib/gyp/generator/make.py | 18 ++++++------------
@@ -258,7 +258,7 @@ index f25800f..5635299 100644
 From 7fd6b7eb74e5305ff77afd2ba85cc652de82dd1d Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:58:45 +0800
-Subject: [PATCH 7/7] lint
+Subject: [PATCH 7/8] lint
 
 ---
  pylib/gyp/generator/make.py | 4 +++-
@@ -279,3 +279,71 @@ index 5635299..ab1a120 100644
              "cmd": replace_sep(gyp.common.EncodePOSIXShellList(
                  [gyp_binary, "-fmake"] + gyp.RegenerateFlags(options) + build_files_args
              )),
+
+From be69f9f616333300857e7d4d403ac289f1a5cc87 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sun, 28 Jan 2024 18:51:53 +0800
+Subject: [PATCH 8/8] replace sep in compiler path
+
+---
+ pylib/gyp/generator/make.py | 33 ++++++++++++++++++++++-----------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index ab1a120..d406c4a 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -2442,7 +2442,7 @@ def CalculateMakefilePath(build_file, base_name):
+         makefile_path = os.path.join(
+             options.toplevel_dir, options.generator_output, makefile_name
+         )
+-        srcdir = gyp.common.RelativePath(srcdir, options.generator_output)
++        srcdir = replace_sep(gyp.common.RelativePath(srcdir, options.generator_output))
+         srcdir_prefix = "$(srcdir)/"
+ 
+     flock_command = "flock"
+@@ -2456,6 +2456,17 @@ def CalculateMakefilePath(build_file, base_name):
+             ' -Wl,--end-group', ''
+         )
+ 
++    CC_target = replace_sep(GetEnvironFallback(("CC_target", "CC"), "$(CC)"))
++    AR_target = replace_sep(GetEnvironFallback(("AR_target", "AR"), "$(AR)"))
++    CXX_target = replace_sep(GetEnvironFallback(("CXX_target", "CXX"), "$(CXX)"))
++    LINK_target = replace_sep(GetEnvironFallback(("LINK_target", "LINK"), "$(LINK)"))
++    PLI_target = replace_sep(GetEnvironFallback(("PLI_target", "PLI"), "pli"))
++    CC_host = replace_sep(GetEnvironFallback(("CC_host", "CC"), "gcc"))
++    AR_host = replace_sep(GetEnvironFallback(("AR_host", "AR"), "ar"))
++    CXX_host = replace_sep(GetEnvironFallback(("CXX_host", "CXX"), "g++"))
++    LINK_host = replace_sep(GetEnvironFallback(("LINK_host", "LINK"), "$(CXX.host)"))
++    PLI_host = replace_sep(GetEnvironFallback(("PLI_host", "PLI"), "pli"))
++
+     header_params = {
+         "default_target": default_target,
+         "builddir": builddir_name,
+@@ -2467,16 +2478,16 @@ def CalculateMakefilePath(build_file, base_name):
+         "srcdir": srcdir,
+         "copy_archive_args": copy_archive_arguments,
+         "makedep_args": makedep_arguments,
+-        "CC.target": GetEnvironFallback(("CC_target", "CC"), "$(CC)"),
+-        "AR.target": GetEnvironFallback(("AR_target", "AR"), "$(AR)"),
+-        "CXX.target": GetEnvironFallback(("CXX_target", "CXX"), "$(CXX)"),
+-        "LINK.target": GetEnvironFallback(("LINK_target", "LINK"), "$(LINK)"),
+-        "PLI.target": GetEnvironFallback(("PLI_target", "PLI"), "pli"),
+-        "CC.host": GetEnvironFallback(("CC_host", "CC"), "gcc"),
+-        "AR.host": GetEnvironFallback(("AR_host", "AR"), "ar"),
+-        "CXX.host": GetEnvironFallback(("CXX_host", "CXX"), "g++"),
+-        "LINK.host": GetEnvironFallback(("LINK_host", "LINK"), "$(CXX.host)"),
+-        "PLI.host": GetEnvironFallback(("PLI_host", "PLI"), "pli"),
++        "CC.target": CC_target,
++        "AR.target": AR_target,
++        "CXX.target": CXX_target,
++        "LINK.target": LINK_target,
++        "PLI.target": PLI_target,
++        "CC.host": CC_host,
++        "AR.host": AR_host,
++        "CXX.host": CXX_host,
++        "LINK.host": LINK_host,
++        "PLI.host": PLI_host,
+     }
+     # If cross-compiling, reserve linux link commands and do not use gyp-mac-tool
+     if flavor == "mac" and not gyp.common.CrossCompileRequested():
