@@ -1,349 +1,173 @@
-From 6c9a795c263d3b68b5d1598dfa484ce3e111e7da Mon Sep 17 00:00:00 2001
+From fbea4c4c9a0643a91acbd5025a4d7053345db95d Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
-Date: Thu, 18 Jan 2024 22:55:37 +0800
-Subject: [PATCH 1/8] fix: support cross compiling for wasm with make generator
+Date: Sun, 28 Jan 2024 23:21:28 +0800
+Subject: [PATCH 1/2] feat: `node-gyp build` with make generator on Windows
 
 ---
- pylib/gyp/generator/make.py | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ lib/build.js     | 18 ++++++++++++------
+ lib/configure.js | 14 ++++++++++++--
+ 2 files changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
-index 1b99749..e6e95a3 100644
---- a/pylib/gyp/generator/make.py
-+++ b/pylib/gyp/generator/make.py
-@@ -859,7 +859,11 @@ def Write(
-             self.output = self.ComputeMacBundleOutput(spec)
-             self.output_binary = self.ComputeMacBundleBinaryOutput(spec)
-         else:
--            self.output = self.output_binary = self.ComputeOutput(spec)
-+            if self.flavor == "win":
-+                # prevent from generating copy targets on Windows
-+                self.output = self.output_binary = self.ComputeOutput(spec).replace('\\', '/')
-+            else:
-+                self.output = self.output_binary = self.ComputeOutput(spec)
- 
-         self.is_standalone_static_library = bool(
-             spec.get("standalone_static_library", 0)
-@@ -2441,13 +2445,17 @@ def CalculateMakefilePath(build_file, base_name):
-     flock_command = "flock"
-     copy_archive_arguments = "-af"
-     makedep_arguments = "-MMD"
-+
-+    # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
-+    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(' -Wl,--end-group', '') if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
-+
-     header_params = {
-         "default_target": default_target,
-         "builddir": builddir_name,
-         "default_configuration": default_configuration,
-         "flock": flock_command,
-         "flock_index": 1,
--        "link_commands": LINK_COMMANDS_LINUX,
-+        "link_commands": link_commands,
-         "extra_commands": "",
-         "srcdir": srcdir,
-         "copy_archive_args": copy_archive_arguments,
-@@ -2463,7 +2471,8 @@ def CalculateMakefilePath(build_file, base_name):
-         "LINK.host": GetEnvironFallback(("LINK_host", "LINK"), "$(CXX.host)"),
-         "PLI.host": GetEnvironFallback(("PLI_host", "PLI"), "pli"),
+diff --git a/lib/build.js b/lib/build.js
+index 6b8d84d3ed..07779f8df1 100644
+--- a/lib/build.js
++++ b/lib/build.js
+@@ -85,18 +85,24 @@ async function build (gyp, argv) {
+   async function findSolutionFile () {
+     const files = await glob('build/*.sln')
+     if (files.length === 0) {
+-      throw new Error('Could not find *.sln file. Did you run "configure"?')
++      if (require('fs').existsSync('build/Makefile') || (await glob('build/*.mk')).length !== 0) {
++        command = makeCommand
++        await doWhich(false)
++        return
++      } else {
++        throw new Error('Could not find *.sln file or Makefile. Did you run "configure"?')
++      }
      }
--    if flavor == "mac":
-+    # If cross-compiling, reserve linux link commands and do not use gyp-mac-tool
-+    if flavor == "mac" and not gyp.common.CrossCompileRequested():
-         flock_command = "./gyp-mac-tool flock"
-         header_params.update(
-             {
-
-From 326246b749c5697d1a829c36c06e042cf2417450 Mon Sep 17 00:00:00 2001
-From: toyobayashi <lifenglin314@outlook.com>
-Date: Fri, 19 Jan 2024 12:39:23 +0800
-Subject: [PATCH 2/8] fix: lint
-
----
- pylib/gyp/generator/make.py | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
-index e6e95a3..3036a08 100644
---- a/pylib/gyp/generator/make.py
-+++ b/pylib/gyp/generator/make.py
-@@ -861,7 +861,9 @@ def Write(
-         else:
-             if self.flavor == "win":
-                 # prevent from generating copy targets on Windows
--                self.output = self.output_binary = self.ComputeOutput(spec).replace('\\', '/')
-+                self.output = self.output_binary = self.ComputeOutput(spec).replace(
-+                    '\\', '/'
-+                )
-             else:
-                 self.output = self.output_binary = self.ComputeOutput(spec)
+     guessedSolution = files[0]
+     log.verbose('found first Solution file', guessedSolution)
+-    await doWhich()
++    await doWhich(true)
+   }
  
-@@ -2447,7 +2449,9 @@ def CalculateMakefilePath(build_file, base_name):
-     makedep_arguments = "-MMD"
+   /**
+    * Uses node-which to locate the msbuild / make executable.
+    */
  
-     # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
--    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(' -Wl,--end-group', '') if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
-+    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(
-+        ' -Wl,--end-group', ''
-+    ) if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
+-  async function doWhich () {
++  async function doWhich (win) {
+     // On Windows use msbuild provided by node-gyp configure
+     if (win) {
+       if (!config.variables.msbuild_path) {
+@@ -104,21 +110,21 @@ async function build (gyp, argv) {
+       }
+       command = config.variables.msbuild_path
+       log.verbose('using MSBuild:', command)
+-      await doBuild()
++      await doBuild(win)
+       return
+     }
  
-     header_params = {
-         "default_target": default_target,
-
-From 9bc78054b675b320bb980de14cabd0a2240d2ac9 Mon Sep 17 00:00:00 2001
-From: Toyo Li <lifenglin314@outlook.com>
-Date: Fri, 19 Jan 2024 21:04:38 +0800
-Subject: [PATCH 3/8] refactor for readability
-
-Co-authored-by: Christian Clauss <cclauss@me.com>
----
- pylib/gyp/generator/make.py | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
-index 3036a08..ba9be4b 100644
---- a/pylib/gyp/generator/make.py
-+++ b/pylib/gyp/generator/make.py
-@@ -2449,9 +2449,11 @@ def CalculateMakefilePath(build_file, base_name):
-     makedep_arguments = "-MMD"
+     // First make sure we have the build command in the PATH
+     const execPath = await which(command)
+     log.verbose('`which` succeeded for `' + command + '`', execPath)
+-    await doBuild()
++    await doBuild(win)
+   }
  
-     # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
--    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(
--        ' -Wl,--end-group', ''
--    ) if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
-+    link_commands = LINK_COMMANDS_LINUX
-+    if gyp.common.CrossCompileRequested():
-+        link_commands = link_commands.replace(' -Wl,--start-group', '').replace(
-+            ' -Wl,--end-group', ''
-+        )
+   /**
+    * Actually spawn the process and compile the module.
+    */
  
-     header_params = {
-         "default_target": default_target,
-
-From 882c1f9bdb3774dc686ba84ac047ab0abd64f70a Mon Sep 17 00:00:00 2001
-From: toyobayashi <lifenglin314@outlook.com>
-Date: Wed, 24 Jan 2024 00:09:08 +0800
-Subject: [PATCH 4/8] replace separator in make generator on Windows
-
----
- pylib/gyp/generator/make.py | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
-index ba9be4b..f058936 100644
---- a/pylib/gyp/generator/make.py
-+++ b/pylib/gyp/generator/make.py
-@@ -25,6 +25,7 @@
- import os
- import re
- import subprocess
-+import sys
- import gyp
- import gyp.common
- import gyp.xcode_emulation
-@@ -724,6 +725,10 @@ def QuoteIfNecessary(string):
-         string = '"' + string.replace('"', '\\"') + '"'
-     return string
- 
-+def ReplaceSep(string):
-+    if sys.platform == 'win32':
-+        string = string.replace('\\', '/')
-+    return string
- 
- def StringToMakefileVariable(string):
-     """Convert a string to a value that is acceptable as a make variable name."""
-@@ -2069,7 +2074,7 @@ def WriteList(self, value_list, variable=None, prefix="", quoter=QuoteIfNecessar
-         """
-         values = ""
-         if value_list:
--            value_list = [quoter(prefix + value) for value in value_list]
-+            value_list = [ReplaceSep(quoter(prefix + value)) for value in value_list]
-             values = " \\\n\t" + " \\\n\t".join(value_list)
-         self.fp.write(f"{variable} :={values}\n\n")
- 
-
-From 82d5d76bdcae91760aab25a582ad726974c99936 Mon Sep 17 00:00:00 2001
-From: toyobayashi <lifenglin314@outlook.com>
-Date: Wed, 24 Jan 2024 09:02:09 +0800
-Subject: [PATCH 5/8] snake_case
-
----
- pylib/gyp/generator/make.py | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
-index f058936..f25800f 100644
---- a/pylib/gyp/generator/make.py
-+++ b/pylib/gyp/generator/make.py
-@@ -725,7 +725,7 @@ def QuoteIfNecessary(string):
-         string = '"' + string.replace('"', '\\"') + '"'
-     return string
- 
--def ReplaceSep(string):
-+def replace_sep(string):
-     if sys.platform == 'win32':
-         string = string.replace('\\', '/')
-     return string
-@@ -2074,7 +2074,7 @@ def WriteList(self, value_list, variable=None, prefix="", quoter=QuoteIfNecessar
-         """
-         values = ""
-         if value_list:
--            value_list = [ReplaceSep(quoter(prefix + value)) for value in value_list]
-+            value_list = [replace_sep(quoter(prefix + value)) for value in value_list]
-             values = " \\\n\t" + " \\\n\t".join(value_list)
-         self.fp.write(f"{variable} :={values}\n\n")
- 
-
-From 6a757fc3e38f50d0e294a6e369c42a53a4a382bb Mon Sep 17 00:00:00 2001
-From: toyobayashi <lifenglin314@outlook.com>
-Date: Sun, 28 Jan 2024 00:55:29 +0800
-Subject: [PATCH 6/8] found more place to replace sep
-
----
- pylib/gyp/generator/make.py | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
-
-diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
-index f25800f..5635299 100644
---- a/pylib/gyp/generator/make.py
-+++ b/pylib/gyp/generator/make.py
-@@ -727,7 +727,7 @@ def QuoteIfNecessary(string):
- 
- def replace_sep(string):
-     if sys.platform == 'win32':
--        string = string.replace('\\', '/')
-+        string = string.replace('\\\\', '/').replace('\\', '/')
-     return string
- 
- def StringToMakefileVariable(string):
-@@ -864,13 +864,7 @@ def Write(
-             self.output = self.ComputeMacBundleOutput(spec)
-             self.output_binary = self.ComputeMacBundleBinaryOutput(spec)
-         else:
--            if self.flavor == "win":
--                # prevent from generating copy targets on Windows
--                self.output = self.output_binary = self.ComputeOutput(spec).replace(
--                    '\\', '/'
--                )
--            else:
--                self.output = self.output_binary = self.ComputeOutput(spec)
-+            self.output = self.output_binary = replace_sep(self.ComputeOutput(spec))
- 
-         self.is_standalone_static_library = bool(
-             spec.get("standalone_static_library", 0)
-@@ -996,7 +990,7 @@ def WriteSubMake(self, output_filename, makefile_path, targets, build_dir):
-         # sub-project dir (see test/subdirectory/gyptest-subdir-all.py).
-         self.WriteLn(
-             "export builddir_name ?= %s"
--            % os.path.join(os.path.dirname(output_filename), build_dir)
-+            % replace_sep(os.path.join(os.path.dirname(output_filename), build_dir))
-         )
-         self.WriteLn(".PHONY: all")
-         self.WriteLn("all:")
-@@ -2380,10 +2374,10 @@ def WriteAutoRegenerationRule(params, root_makefile, makefile_name, build_files)
-         "\t$(call do_cmd,regen_makefile)\n\n"
-         % {
-             "makefile_name": makefile_name,
--            "deps": " ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files),
--            "cmd": gyp.common.EncodePOSIXShellList(
-+            "deps": replace_sep(" ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files)),
-+            "cmd": replace_sep(gyp.common.EncodePOSIXShellList(
-                 [gyp_binary, "-fmake"] + gyp.RegenerateFlags(options) + build_files_args
--            ),
-+            )),
-         }
+-  async function doBuild () {
++  async function doBuild (win) {
+     // Enable Verbose build
+     const verbose = log.logger.isVisible('verbose')
+     let j
+diff --git a/lib/configure.js b/lib/configure.js
+index 8da41a849d..3a39878c91 100644
+--- a/lib/configure.js
++++ b/lib/configure.js
+@@ -66,8 +66,18 @@ async function configure (gyp, argv) {
+     log.verbose(
+       'build dir', '"build" dir needed to be created?', isNew ? 'Yes' : 'No'
      )
+-    const vsInfo = win ? await findVisualStudio(release.semver, gyp.opts['msvs-version']) : null
+-    return createConfigFile(vsInfo)
++    if (win) {
++      let gypFormatIndex = argv.indexOf('-f')
++      if (gypFormatIndex === -1) {
++        gypFormatIndex = argv.indexOf('--format')
++      }
++      if (gypFormatIndex === -1 || !argv[gypFormatIndex + 1] || argv[gypFormatIndex + 1] === 'msvs') {
++        const vsInfo = await findVisualStudio(release.semver, gyp.opts['msvs-version'])
++        return createConfigFile(vsInfo)
++      }
++      return createConfigFile({})
++    }
++    return createConfigFile(null)
+   }
  
+   async function createConfigFile (vsInfo) {
 
-From 7fd6b7eb74e5305ff77afd2ba85cc652de82dd1d Mon Sep 17 00:00:00 2001
+From ff228bb4e4fe9a6f30962da34ab2ffc013663ac0 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
-Date: Sun, 28 Jan 2024 00:58:45 +0800
-Subject: [PATCH 7/8] lint
+Date: Sun, 28 Jan 2024 23:28:04 +0800
+Subject: [PATCH 2/2] do not add symlinks to `%Path%`
 
 ---
- pylib/gyp/generator/make.py | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ lib/build.js | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
-index 5635299..ab1a120 100644
---- a/pylib/gyp/generator/make.py
-+++ b/pylib/gyp/generator/make.py
-@@ -2374,7 +2374,9 @@ def WriteAutoRegenerationRule(params, root_makefile, makefile_name, build_files)
-         "\t$(call do_cmd,regen_makefile)\n\n"
-         % {
-             "makefile_name": makefile_name,
--            "deps": replace_sep(" ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files)),
-+            "deps": replace_sep(
-+                " ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files)
-+            ),
-             "cmd": replace_sep(gyp.common.EncodePOSIXShellList(
-                 [gyp_binary, "-fmake"] + gyp.RegenerateFlags(options) + build_files_args
-             )),
-
-From be69f9f616333300857e7d4d403ac289f1a5cc87 Mon Sep 17 00:00:00 2001
-From: toyobayashi <lifenglin314@outlook.com>
-Date: Sun, 28 Jan 2024 18:51:53 +0800
-Subject: [PATCH 8/8] replace sep in compiler path
-
----
- pylib/gyp/generator/make.py | 33 ++++++++++++++++++++++-----------
- 1 file changed, 22 insertions(+), 11 deletions(-)
-
-diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
-index ab1a120..d406c4a 100644
---- a/pylib/gyp/generator/make.py
-+++ b/pylib/gyp/generator/make.py
-@@ -2442,7 +2442,7 @@ def CalculateMakefilePath(build_file, base_name):
-         makefile_path = os.path.join(
-             options.toplevel_dir, options.generator_output, makefile_name
-         )
--        srcdir = gyp.common.RelativePath(srcdir, options.generator_output)
-+        srcdir = replace_sep(gyp.common.RelativePath(srcdir, options.generator_output))
-         srcdir_prefix = "$(srcdir)/"
+diff --git a/lib/build.js b/lib/build.js
+index 07779f8df1..fef817ea0a 100644
+--- a/lib/build.js
++++ b/lib/build.js
+@@ -102,48 +102,48 @@ async function build (gyp, argv) {
+    * Uses node-which to locate the msbuild / make executable.
+    */
  
-     flock_command = "flock"
-@@ -2456,6 +2456,17 @@ def CalculateMakefilePath(build_file, base_name):
-             ' -Wl,--end-group', ''
-         )
- 
-+    CC_target = replace_sep(GetEnvironFallback(("CC_target", "CC"), "$(CC)"))
-+    AR_target = replace_sep(GetEnvironFallback(("AR_target", "AR"), "$(AR)"))
-+    CXX_target = replace_sep(GetEnvironFallback(("CXX_target", "CXX"), "$(CXX)"))
-+    LINK_target = replace_sep(GetEnvironFallback(("LINK_target", "LINK"), "$(LINK)"))
-+    PLI_target = replace_sep(GetEnvironFallback(("PLI_target", "PLI"), "pli"))
-+    CC_host = replace_sep(GetEnvironFallback(("CC_host", "CC"), "gcc"))
-+    AR_host = replace_sep(GetEnvironFallback(("AR_host", "AR"), "ar"))
-+    CXX_host = replace_sep(GetEnvironFallback(("CXX_host", "CXX"), "g++"))
-+    LINK_host = replace_sep(GetEnvironFallback(("LINK_host", "LINK"), "$(CXX.host)"))
-+    PLI_host = replace_sep(GetEnvironFallback(("PLI_host", "PLI"), "pli"))
-+
-     header_params = {
-         "default_target": default_target,
-         "builddir": builddir_name,
-@@ -2467,16 +2478,16 @@ def CalculateMakefilePath(build_file, base_name):
-         "srcdir": srcdir,
-         "copy_archive_args": copy_archive_arguments,
-         "makedep_args": makedep_arguments,
--        "CC.target": GetEnvironFallback(("CC_target", "CC"), "$(CC)"),
--        "AR.target": GetEnvironFallback(("AR_target", "AR"), "$(AR)"),
--        "CXX.target": GetEnvironFallback(("CXX_target", "CXX"), "$(CXX)"),
--        "LINK.target": GetEnvironFallback(("LINK_target", "LINK"), "$(LINK)"),
--        "PLI.target": GetEnvironFallback(("PLI_target", "PLI"), "pli"),
--        "CC.host": GetEnvironFallback(("CC_host", "CC"), "gcc"),
--        "AR.host": GetEnvironFallback(("AR_host", "AR"), "ar"),
--        "CXX.host": GetEnvironFallback(("CXX_host", "CXX"), "g++"),
--        "LINK.host": GetEnvironFallback(("LINK_host", "LINK"), "$(CXX.host)"),
--        "PLI.host": GetEnvironFallback(("PLI_host", "PLI"), "pli"),
-+        "CC.target": CC_target,
-+        "AR.target": AR_target,
-+        "CXX.target": CXX_target,
-+        "LINK.target": LINK_target,
-+        "PLI.target": PLI_target,
-+        "CC.host": CC_host,
-+        "AR.host": AR_host,
-+        "CXX.host": CXX_host,
-+        "LINK.host": LINK_host,
-+        "PLI.host": PLI_host,
+-  async function doWhich (win) {
++  async function doWhich (msvs) {
+     // On Windows use msbuild provided by node-gyp configure
+-    if (win) {
++    if (msvs) {
+       if (!config.variables.msbuild_path) {
+         throw new Error('MSBuild is not set, please run `node-gyp configure`.')
+       }
+       command = config.variables.msbuild_path
+       log.verbose('using MSBuild:', command)
+-      await doBuild(win)
++      await doBuild(msvs)
+       return
      }
-     # If cross-compiling, reserve linux link commands and do not use gyp-mac-tool
-     if flavor == "mac" and not gyp.common.CrossCompileRequested():
+ 
+     // First make sure we have the build command in the PATH
+     const execPath = await which(command)
+     log.verbose('`which` succeeded for `' + command + '`', execPath)
+-    await doBuild(win)
++    await doBuild(msvs)
+   }
+ 
+   /**
+    * Actually spawn the process and compile the module.
+    */
+ 
+-  async function doBuild (win) {
++  async function doBuild (msvs) {
+     // Enable Verbose build
+     const verbose = log.logger.isVisible('verbose')
+     let j
+ 
+-    if (!win && verbose) {
++    if (!msvs && verbose) {
+       argv.push('V=1')
+     }
+ 
+-    if (win && !verbose) {
++    if (msvs && !verbose) {
+       argv.push('/clp:Verbosity=minimal')
+     }
+ 
+-    if (win) {
++    if (msvs) {
+       // Turn off the Microsoft logo on Windows
+       argv.push('/nologo')
+     }
+ 
+     // Specify the build type, Release by default
+-    if (win) {
++    if (msvs) {
+       // Convert .gypi config target_arch to MSBuild /Platform
+       // Since there are many ways to state '32-bit Intel', default to it.
+       // N.B. msbuild's Condition string equality tests are case-insensitive.
+@@ -179,7 +179,7 @@ async function build (gyp, argv) {
+       }
+     }
+ 
+-    if (win) {
++    if (msvs) {
+       // did the user specify their own .sln file?
+       const hasSln = argv.some(function (arg) {
+         return path.extname(arg) === '.sln'

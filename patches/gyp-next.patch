@@ -1,0 +1,474 @@
+From 6c9a795c263d3b68b5d1598dfa484ce3e111e7da Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Thu, 18 Jan 2024 22:55:37 +0800
+Subject: [PATCH 01/12] fix: support cross compiling for wasm with make
+ generator
+
+---
+ pylib/gyp/generator/make.py | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index 1b99749..e6e95a3 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -859,7 +859,11 @@ def Write(
+             self.output = self.ComputeMacBundleOutput(spec)
+             self.output_binary = self.ComputeMacBundleBinaryOutput(spec)
+         else:
+-            self.output = self.output_binary = self.ComputeOutput(spec)
++            if self.flavor == "win":
++                # prevent from generating copy targets on Windows
++                self.output = self.output_binary = self.ComputeOutput(spec).replace('\\', '/')
++            else:
++                self.output = self.output_binary = self.ComputeOutput(spec)
+ 
+         self.is_standalone_static_library = bool(
+             spec.get("standalone_static_library", 0)
+@@ -2441,13 +2445,17 @@ def CalculateMakefilePath(build_file, base_name):
+     flock_command = "flock"
+     copy_archive_arguments = "-af"
+     makedep_arguments = "-MMD"
++
++    # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
++    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(' -Wl,--end-group', '') if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
++
+     header_params = {
+         "default_target": default_target,
+         "builddir": builddir_name,
+         "default_configuration": default_configuration,
+         "flock": flock_command,
+         "flock_index": 1,
+-        "link_commands": LINK_COMMANDS_LINUX,
++        "link_commands": link_commands,
+         "extra_commands": "",
+         "srcdir": srcdir,
+         "copy_archive_args": copy_archive_arguments,
+@@ -2463,7 +2471,8 @@ def CalculateMakefilePath(build_file, base_name):
+         "LINK.host": GetEnvironFallback(("LINK_host", "LINK"), "$(CXX.host)"),
+         "PLI.host": GetEnvironFallback(("PLI_host", "PLI"), "pli"),
+     }
+-    if flavor == "mac":
++    # If cross-compiling, reserve linux link commands and do not use gyp-mac-tool
++    if flavor == "mac" and not gyp.common.CrossCompileRequested():
+         flock_command = "./gyp-mac-tool flock"
+         header_params.update(
+             {
+
+From 326246b749c5697d1a829c36c06e042cf2417450 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Fri, 19 Jan 2024 12:39:23 +0800
+Subject: [PATCH 02/12] fix: lint
+
+---
+ pylib/gyp/generator/make.py | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index e6e95a3..3036a08 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -861,7 +861,9 @@ def Write(
+         else:
+             if self.flavor == "win":
+                 # prevent from generating copy targets on Windows
+-                self.output = self.output_binary = self.ComputeOutput(spec).replace('\\', '/')
++                self.output = self.output_binary = self.ComputeOutput(spec).replace(
++                    '\\', '/'
++                )
+             else:
+                 self.output = self.output_binary = self.ComputeOutput(spec)
+ 
+@@ -2447,7 +2449,9 @@ def CalculateMakefilePath(build_file, base_name):
+     makedep_arguments = "-MMD"
+ 
+     # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
+-    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(' -Wl,--end-group', '') if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
++    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(
++        ' -Wl,--end-group', ''
++    ) if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
+ 
+     header_params = {
+         "default_target": default_target,
+
+From 9bc78054b675b320bb980de14cabd0a2240d2ac9 Mon Sep 17 00:00:00 2001
+From: Toyo Li <lifenglin314@outlook.com>
+Date: Fri, 19 Jan 2024 21:04:38 +0800
+Subject: [PATCH 03/12] refactor for readability
+
+Co-authored-by: Christian Clauss <cclauss@me.com>
+---
+ pylib/gyp/generator/make.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index 3036a08..ba9be4b 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -2449,9 +2449,11 @@ def CalculateMakefilePath(build_file, base_name):
+     makedep_arguments = "-MMD"
+ 
+     # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
+-    link_commands = LINK_COMMANDS_LINUX.replace(' -Wl,--start-group', '').replace(
+-        ' -Wl,--end-group', ''
+-    ) if gyp.common.CrossCompileRequested() else LINK_COMMANDS_LINUX
++    link_commands = LINK_COMMANDS_LINUX
++    if gyp.common.CrossCompileRequested():
++        link_commands = link_commands.replace(' -Wl,--start-group', '').replace(
++            ' -Wl,--end-group', ''
++        )
+ 
+     header_params = {
+         "default_target": default_target,
+
+From 882c1f9bdb3774dc686ba84ac047ab0abd64f70a Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Wed, 24 Jan 2024 00:09:08 +0800
+Subject: [PATCH 04/12] replace separator in make generator on Windows
+
+---
+ pylib/gyp/generator/make.py | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index ba9be4b..f058936 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -25,6 +25,7 @@
+ import os
+ import re
+ import subprocess
++import sys
+ import gyp
+ import gyp.common
+ import gyp.xcode_emulation
+@@ -724,6 +725,10 @@ def QuoteIfNecessary(string):
+         string = '"' + string.replace('"', '\\"') + '"'
+     return string
+ 
++def ReplaceSep(string):
++    if sys.platform == 'win32':
++        string = string.replace('\\', '/')
++    return string
+ 
+ def StringToMakefileVariable(string):
+     """Convert a string to a value that is acceptable as a make variable name."""
+@@ -2069,7 +2074,7 @@ def WriteList(self, value_list, variable=None, prefix="", quoter=QuoteIfNecessar
+         """
+         values = ""
+         if value_list:
+-            value_list = [quoter(prefix + value) for value in value_list]
++            value_list = [ReplaceSep(quoter(prefix + value)) for value in value_list]
+             values = " \\\n\t" + " \\\n\t".join(value_list)
+         self.fp.write(f"{variable} :={values}\n\n")
+ 
+
+From 82d5d76bdcae91760aab25a582ad726974c99936 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Wed, 24 Jan 2024 09:02:09 +0800
+Subject: [PATCH 05/12] snake_case
+
+---
+ pylib/gyp/generator/make.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index f058936..f25800f 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -725,7 +725,7 @@ def QuoteIfNecessary(string):
+         string = '"' + string.replace('"', '\\"') + '"'
+     return string
+ 
+-def ReplaceSep(string):
++def replace_sep(string):
+     if sys.platform == 'win32':
+         string = string.replace('\\', '/')
+     return string
+@@ -2074,7 +2074,7 @@ def WriteList(self, value_list, variable=None, prefix="", quoter=QuoteIfNecessar
+         """
+         values = ""
+         if value_list:
+-            value_list = [ReplaceSep(quoter(prefix + value)) for value in value_list]
++            value_list = [replace_sep(quoter(prefix + value)) for value in value_list]
+             values = " \\\n\t" + " \\\n\t".join(value_list)
+         self.fp.write(f"{variable} :={values}\n\n")
+ 
+
+From 6a757fc3e38f50d0e294a6e369c42a53a4a382bb Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sun, 28 Jan 2024 00:55:29 +0800
+Subject: [PATCH 06/12] found more place to replace sep
+
+---
+ pylib/gyp/generator/make.py | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index f25800f..5635299 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -727,7 +727,7 @@ def QuoteIfNecessary(string):
+ 
+ def replace_sep(string):
+     if sys.platform == 'win32':
+-        string = string.replace('\\', '/')
++        string = string.replace('\\\\', '/').replace('\\', '/')
+     return string
+ 
+ def StringToMakefileVariable(string):
+@@ -864,13 +864,7 @@ def Write(
+             self.output = self.ComputeMacBundleOutput(spec)
+             self.output_binary = self.ComputeMacBundleBinaryOutput(spec)
+         else:
+-            if self.flavor == "win":
+-                # prevent from generating copy targets on Windows
+-                self.output = self.output_binary = self.ComputeOutput(spec).replace(
+-                    '\\', '/'
+-                )
+-            else:
+-                self.output = self.output_binary = self.ComputeOutput(spec)
++            self.output = self.output_binary = replace_sep(self.ComputeOutput(spec))
+ 
+         self.is_standalone_static_library = bool(
+             spec.get("standalone_static_library", 0)
+@@ -996,7 +990,7 @@ def WriteSubMake(self, output_filename, makefile_path, targets, build_dir):
+         # sub-project dir (see test/subdirectory/gyptest-subdir-all.py).
+         self.WriteLn(
+             "export builddir_name ?= %s"
+-            % os.path.join(os.path.dirname(output_filename), build_dir)
++            % replace_sep(os.path.join(os.path.dirname(output_filename), build_dir))
+         )
+         self.WriteLn(".PHONY: all")
+         self.WriteLn("all:")
+@@ -2380,10 +2374,10 @@ def WriteAutoRegenerationRule(params, root_makefile, makefile_name, build_files)
+         "\t$(call do_cmd,regen_makefile)\n\n"
+         % {
+             "makefile_name": makefile_name,
+-            "deps": " ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files),
+-            "cmd": gyp.common.EncodePOSIXShellList(
++            "deps": replace_sep(" ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files)),
++            "cmd": replace_sep(gyp.common.EncodePOSIXShellList(
+                 [gyp_binary, "-fmake"] + gyp.RegenerateFlags(options) + build_files_args
+-            ),
++            )),
+         }
+     )
+ 
+
+From 7fd6b7eb74e5305ff77afd2ba85cc652de82dd1d Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sun, 28 Jan 2024 00:58:45 +0800
+Subject: [PATCH 07/12] lint
+
+---
+ pylib/gyp/generator/make.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index 5635299..ab1a120 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -2374,7 +2374,9 @@ def WriteAutoRegenerationRule(params, root_makefile, makefile_name, build_files)
+         "\t$(call do_cmd,regen_makefile)\n\n"
+         % {
+             "makefile_name": makefile_name,
+-            "deps": replace_sep(" ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files)),
++            "deps": replace_sep(
++                " ".join(SourceifyAndQuoteSpaces(bf) for bf in build_files)
++            ),
+             "cmd": replace_sep(gyp.common.EncodePOSIXShellList(
+                 [gyp_binary, "-fmake"] + gyp.RegenerateFlags(options) + build_files_args
+             )),
+
+From be69f9f616333300857e7d4d403ac289f1a5cc87 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sun, 28 Jan 2024 18:51:53 +0800
+Subject: [PATCH 08/12] replace sep in compiler path
+
+---
+ pylib/gyp/generator/make.py | 33 ++++++++++++++++++++++-----------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index ab1a120..d406c4a 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -2442,7 +2442,7 @@ def CalculateMakefilePath(build_file, base_name):
+         makefile_path = os.path.join(
+             options.toplevel_dir, options.generator_output, makefile_name
+         )
+-        srcdir = gyp.common.RelativePath(srcdir, options.generator_output)
++        srcdir = replace_sep(gyp.common.RelativePath(srcdir, options.generator_output))
+         srcdir_prefix = "$(srcdir)/"
+ 
+     flock_command = "flock"
+@@ -2456,6 +2456,17 @@ def CalculateMakefilePath(build_file, base_name):
+             ' -Wl,--end-group', ''
+         )
+ 
++    CC_target = replace_sep(GetEnvironFallback(("CC_target", "CC"), "$(CC)"))
++    AR_target = replace_sep(GetEnvironFallback(("AR_target", "AR"), "$(AR)"))
++    CXX_target = replace_sep(GetEnvironFallback(("CXX_target", "CXX"), "$(CXX)"))
++    LINK_target = replace_sep(GetEnvironFallback(("LINK_target", "LINK"), "$(LINK)"))
++    PLI_target = replace_sep(GetEnvironFallback(("PLI_target", "PLI"), "pli"))
++    CC_host = replace_sep(GetEnvironFallback(("CC_host", "CC"), "gcc"))
++    AR_host = replace_sep(GetEnvironFallback(("AR_host", "AR"), "ar"))
++    CXX_host = replace_sep(GetEnvironFallback(("CXX_host", "CXX"), "g++"))
++    LINK_host = replace_sep(GetEnvironFallback(("LINK_host", "LINK"), "$(CXX.host)"))
++    PLI_host = replace_sep(GetEnvironFallback(("PLI_host", "PLI"), "pli"))
++
+     header_params = {
+         "default_target": default_target,
+         "builddir": builddir_name,
+@@ -2467,16 +2478,16 @@ def CalculateMakefilePath(build_file, base_name):
+         "srcdir": srcdir,
+         "copy_archive_args": copy_archive_arguments,
+         "makedep_args": makedep_arguments,
+-        "CC.target": GetEnvironFallback(("CC_target", "CC"), "$(CC)"),
+-        "AR.target": GetEnvironFallback(("AR_target", "AR"), "$(AR)"),
+-        "CXX.target": GetEnvironFallback(("CXX_target", "CXX"), "$(CXX)"),
+-        "LINK.target": GetEnvironFallback(("LINK_target", "LINK"), "$(LINK)"),
+-        "PLI.target": GetEnvironFallback(("PLI_target", "PLI"), "pli"),
+-        "CC.host": GetEnvironFallback(("CC_host", "CC"), "gcc"),
+-        "AR.host": GetEnvironFallback(("AR_host", "AR"), "ar"),
+-        "CXX.host": GetEnvironFallback(("CXX_host", "CXX"), "g++"),
+-        "LINK.host": GetEnvironFallback(("LINK_host", "LINK"), "$(CXX.host)"),
+-        "PLI.host": GetEnvironFallback(("PLI_host", "PLI"), "pli"),
++        "CC.target": CC_target,
++        "AR.target": AR_target,
++        "CXX.target": CXX_target,
++        "LINK.target": LINK_target,
++        "PLI.target": PLI_target,
++        "CC.host": CC_host,
++        "AR.host": AR_host,
++        "CXX.host": CXX_host,
++        "LINK.host": LINK_host,
++        "PLI.host": PLI_host,
+     }
+     # If cross-compiling, reserve linux link commands and do not use gyp-mac-tool
+     if flavor == "mac" and not gyp.common.CrossCompileRequested():
+
+From 7a62b19447d3011dc36ad3a1c74dffed733fa67f Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sun, 28 Jan 2024 21:51:39 +0800
+Subject: [PATCH 09/12] fix sed unterminated `s' command error on Windows
+
+---
+ pylib/gyp/generator/make.py | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index d406c4a..beb045e 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -448,8 +448,12 @@ def CalculateGeneratorInputInfo(params):
+ # Add extra rules as in (2).
+ # We remove slashes and replace spaces with new lines;
+ # remove blank lines;
+-# delete the first line and append a colon to the remaining lines.
+-sed -e 's|\\||' -e 'y| |\n|' $(depfile).raw |\
++# delete the first line and append a colon to the remaining lines.""" +
++    (r"""
++sed -e 's|\\\\||' -e 'y| |\n|' $(depfile).raw |\\""" if sys.platform == 'win32'
++    else r"""
++sed -e 's|\\||' -e 'y| |\n|' $(depfile).raw |\\""") +
++    r"""
+   grep -v '^$$'                             |\
+   sed -e 1d -e 's|$$|:|'                     \
+     >> $(depfile)
+
+From 64290b6abce447735faf6ea9958325cf5483cde1 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sun, 28 Jan 2024 21:59:19 +0800
+Subject: [PATCH 10/12] path includes `\` so replace the ended `\` only
+
+---
+ pylib/gyp/generator/make.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index beb045e..fa00e16 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -450,7 +450,7 @@ def CalculateGeneratorInputInfo(params):
+ # remove blank lines;
+ # delete the first line and append a colon to the remaining lines.""" +
+     (r"""
+-sed -e 's|\\\\||' -e 'y| |\n|' $(depfile).raw |\\""" if sys.platform == 'win32'
++sed -e 's/\\\\$$//' -e 'y| |\n|' $(depfile).raw |\\""" if sys.platform == 'win32'
+     else r"""
+ sed -e 's|\\||' -e 'y| |\n|' $(depfile).raw |\\""") +
+     r"""
+
+From 77b8e9cd4397d37e34855a835d5314b6caf9505e Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Sun, 28 Jan 2024 23:54:44 +0800
+Subject: [PATCH 11/12] replace `\` with `/` in depfile on win
+
+---
+ pylib/gyp/generator/make.py | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index fa00e16..68bc2ef 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -443,14 +443,18 @@ def CalculateGeneratorInputInfo(params):
+ define fixup_dep
+ # The depfile may not exist if the input file didn't have any #includes.
+ touch $(depfile).raw
+-# Fixup path as in (1).
+-sed -e "s|^$(notdir $@)|$@|" $(depfile).raw >> $(depfile)
++# Fixup path as in (1).""" +
++    (r"""
++sed -e "s|^$(notdir $@)|$@|" -re 's/\\\\([^$$])/\/\1/g' $(depfile).raw >> $(depfile)""" if sys.platform == 'win32'
++    else r"""
++sed -e "s|^$(notdir $@)|$@|" $(depfile).raw >> $(depfile)""") +
++    r"""
+ # Add extra rules as in (2).
+ # We remove slashes and replace spaces with new lines;
+ # remove blank lines;
+ # delete the first line and append a colon to the remaining lines.""" +
+     (r"""
+-sed -e 's/\\\\$$//' -e 'y| |\n|' $(depfile).raw |\\""" if sys.platform == 'win32'
++sed -e 's/\\\\$$//' -e 's/\\\\/\//g' -e 'y| |\n|' $(depfile).raw |\\""" if sys.platform == 'win32'
+     else r"""
+ sed -e 's|\\||' -e 'y| |\n|' $(depfile).raw |\\""") +
+     r"""
+
+From 9f110ec52f19268f2239702c1a7ac6a8570cb6a6 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Mon, 29 Jan 2024 00:04:24 +0800
+Subject: [PATCH 12/12] lint
+
+---
+ pylib/gyp/generator/make.py | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index 68bc2ef..c7f5445 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -445,8 +445,8 @@ def CalculateGeneratorInputInfo(params):
+ touch $(depfile).raw
+ # Fixup path as in (1).""" +
+     (r"""
+-sed -e "s|^$(notdir $@)|$@|" -re 's/\\\\([^$$])/\/\1/g' $(depfile).raw >> $(depfile)""" if sys.platform == 'win32'
+-    else r"""
++sed -e "s|^$(notdir $@)|$@|" -re 's/\\\\([^$$])/\/\1/g' $(depfile).raw >> $(depfile)"""
++    if sys.platform == 'win32' else r"""
+ sed -e "s|^$(notdir $@)|$@|" $(depfile).raw >> $(depfile)""") +
+     r"""
+ # Add extra rules as in (2).
+@@ -454,8 +454,8 @@ def CalculateGeneratorInputInfo(params):
+ # remove blank lines;
+ # delete the first line and append a colon to the remaining lines.""" +
+     (r"""
+-sed -e 's/\\\\$$//' -e 's/\\\\/\//g' -e 'y| |\n|' $(depfile).raw |\\""" if sys.platform == 'win32'
+-    else r"""
++sed -e 's/\\\\$$//' -e 's/\\\\/\//g' -e 'y| |\n|' $(depfile).raw |\\"""
++    if sys.platform == 'win32' else r"""
+ sed -e 's|\\||' -e 'y| |\n|' $(depfile).raw |\\""") +
+     r"""
+   grep -v '^$$'                             |\
