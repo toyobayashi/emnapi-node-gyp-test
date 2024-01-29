@@ -1,7 +1,7 @@
 From fbea4c4c9a0643a91acbd5025a4d7053345db95d Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:21:28 +0800
-Subject: [PATCH 1/2] feat: `node-gyp build` with make generator on Windows
+Subject: [PATCH 1/3] feat: `node-gyp build` with make generator on Windows
 
 ---
  lib/build.js     | 18 ++++++++++++------
@@ -94,7 +94,7 @@ index 8da41a849d..3a39878c91 100644
 From ff228bb4e4fe9a6f30962da34ab2ffc013663ac0 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:28:04 +0800
-Subject: [PATCH 2/2] do not add symlinks to `%Path%`
+Subject: [PATCH 2/3] do not add symlinks to `%Path%`
 
 ---
  lib/build.js | 20 ++++++++++----------
@@ -171,3 +171,30 @@ index 07779f8df1..fef817ea0a 100644
        // did the user specify their own .sln file?
        const hasSln = argv.some(function (arg) {
          return path.extname(arg) === '.sln'
+
+From ecd6086c4eaa07b6cdf85040a77cd5d935731fbe Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Mon, 29 Jan 2024 00:42:52 +0800
+Subject: [PATCH 3/3] also try to find visual studio if format is not msvs
+
+---
+ lib/configure.js | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/lib/configure.js b/lib/configure.js
+index 3a39878c91..b06c6ce302 100644
+--- a/lib/configure.js
++++ b/lib/configure.js
+@@ -75,7 +75,11 @@ async function configure (gyp, argv) {
+         const vsInfo = await findVisualStudio(release.semver, gyp.opts['msvs-version'])
+         return createConfigFile(vsInfo)
+       }
+-      return createConfigFile({})
++      let vsInfo = {}
++      try {
++        vsInfo = await findVisualStudio(release.semver, gyp.opts['msvs-version'])
++      } catch (_) {}
++      return createConfigFile(vsInfo)
+     }
+     return createConfigFile(null)
+   }
