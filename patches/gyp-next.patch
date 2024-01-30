@@ -1,7 +1,7 @@
 From 6c9a795c263d3b68b5d1598dfa484ce3e111e7da Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 22:55:37 +0800
-Subject: [PATCH 01/13] fix: support cross compiling for wasm with make
+Subject: [PATCH 01/14] fix: support cross compiling for wasm with make
  generator
 
 ---
@@ -58,7 +58,7 @@ index 1b99749..e6e95a3 100644
 From 326246b749c5697d1a829c36c06e042cf2417450 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 12:39:23 +0800
-Subject: [PATCH 02/13] fix: lint
+Subject: [PATCH 02/14] fix: lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -94,7 +94,7 @@ index e6e95a3..3036a08 100644
 From 9bc78054b675b320bb980de14cabd0a2240d2ac9 Mon Sep 17 00:00:00 2001
 From: Toyo Li <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 21:04:38 +0800
-Subject: [PATCH 03/13] refactor for readability
+Subject: [PATCH 03/14] refactor for readability
 
 Co-authored-by: Christian Clauss <cclauss@me.com>
 ---
@@ -124,7 +124,7 @@ index 3036a08..ba9be4b 100644
 From 882c1f9bdb3774dc686ba84ac047ab0abd64f70a Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 00:09:08 +0800
-Subject: [PATCH 04/13] replace separator in make generator on Windows
+Subject: [PATCH 04/14] replace separator in make generator on Windows
 
 ---
  pylib/gyp/generator/make.py | 7 ++++++-
@@ -166,7 +166,7 @@ index ba9be4b..f058936 100644
 From 82d5d76bdcae91760aab25a582ad726974c99936 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 09:02:09 +0800
-Subject: [PATCH 05/13] snake_case
+Subject: [PATCH 05/14] snake_case
 
 ---
  pylib/gyp/generator/make.py | 4 ++--
@@ -198,7 +198,7 @@ index f058936..f25800f 100644
 From 6a757fc3e38f50d0e294a6e369c42a53a4a382bb Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:55:29 +0800
-Subject: [PATCH 06/13] found more place to replace sep
+Subject: [PATCH 06/14] found more place to replace sep
 
 ---
  pylib/gyp/generator/make.py | 18 ++++++------------
@@ -259,7 +259,7 @@ index f25800f..5635299 100644
 From 7fd6b7eb74e5305ff77afd2ba85cc652de82dd1d Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:58:45 +0800
-Subject: [PATCH 07/13] lint
+Subject: [PATCH 07/14] lint
 
 ---
  pylib/gyp/generator/make.py | 4 +++-
@@ -284,7 +284,7 @@ index 5635299..ab1a120 100644
 From be69f9f616333300857e7d4d403ac289f1a5cc87 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 18:51:53 +0800
-Subject: [PATCH 08/13] replace sep in compiler path
+Subject: [PATCH 08/14] replace sep in compiler path
 
 ---
  pylib/gyp/generator/make.py | 33 ++++++++++++++++++++++-----------
@@ -352,7 +352,7 @@ index ab1a120..d406c4a 100644
 From 7a62b19447d3011dc36ad3a1c74dffed733fa67f Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 21:51:39 +0800
-Subject: [PATCH 09/13] fix sed unterminated `s' command error on Windows
+Subject: [PATCH 09/14] fix sed unterminated `s' command error on Windows
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -381,7 +381,7 @@ index d406c4a..beb045e 100644
 From 64290b6abce447735faf6ea9958325cf5483cde1 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 21:59:19 +0800
-Subject: [PATCH 10/13] path includes `\` so replace the ended `\` only
+Subject: [PATCH 10/14] path includes `\` so replace the ended `\` only
 
 ---
  pylib/gyp/generator/make.py | 2 +-
@@ -404,7 +404,7 @@ index beb045e..fa00e16 100644
 From 77b8e9cd4397d37e34855a835d5314b6caf9505e Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:54:44 +0800
-Subject: [PATCH 11/13] replace `\` with `/` in depfile on win
+Subject: [PATCH 11/14] replace `\` with `/` in depfile on win
 
 ---
  pylib/gyp/generator/make.py | 10 +++++++---
@@ -440,7 +440,7 @@ index fa00e16..68bc2ef 100644
 From 9f110ec52f19268f2239702c1a7ac6a8570cb6a6 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 29 Jan 2024 00:04:24 +0800
-Subject: [PATCH 12/13] lint
+Subject: [PATCH 12/14] lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++----
@@ -476,7 +476,7 @@ index 68bc2ef..c7f5445 100644
 From 1d82674d9a4acd4722e00fafa27fe3d877192c36 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 18:12:33 +0800
-Subject: [PATCH 13/13] fix: trailing `\` in raw string
+Subject: [PATCH 13/14] fix: trailing `\` in raw string
 
 ---
  pylib/gyp/generator/make.py | 4 ++--
@@ -497,3 +497,28 @@ index c7f5445..142a59c 100644
      r"""
    grep -v '^$$'                             |\
    sed -e 1d -e 's|$$|:|'                     \
+
+From 97d765cf1579949517db83f83f10e4ae2fb81e02 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Tue, 30 Jan 2024 18:41:22 +0800
+Subject: [PATCH 14/14] revert: flavor can be set via `-f make-linux` so no
+ need to change the mac params
+
+---
+ pylib/gyp/generator/make.py | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index 142a59c..aaad35d 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -2497,8 +2497,7 @@ def CalculateMakefilePath(build_file, base_name):
+         "LINK.host": LINK_host,
+         "PLI.host": PLI_host,
+     }
+-    # If cross-compiling, reserve linux link commands and do not use gyp-mac-tool
+-    if flavor == "mac" and not gyp.common.CrossCompileRequested():
++    if flavor == "mac":
+         flock_command = "./gyp-mac-tool flock"
+         header_params.update(
+             {
