@@ -23,18 +23,43 @@
                 '-sMODULARIZE=1',
                 '-sEXPORT_NAME=binding'
               ]
-            }
+            },
+            'conditions': [
+              ['emnapi_manual_linking != 0', {
+                'dependencies': [
+                  '<!(node -p "require(\'emnapi\').targets"):emnapi'
+                ]
+              }]
+            ]
           },
-          # {
-          #   'conditions': [
-          #     ["OS == 'unknown'", {
-          #       'dependencies': [
-          #         '<!(node -p "require(\'emnapi\').targets"):dlmalloc'
-          #       ]
-          #     }]
-          #   ]
-          # }
-        ]
+        ],
+        ["OS in ' unknown'", {
+          'conditions': [
+            ['emnapi_manual_linking != 0', {
+              'dependencies': [
+                '<!(node -p "require(\'emnapi\').targets"):dlmalloc',
+                '<!(node -p "require(\'emnapi\').targets"):emnapi_basic'
+              ],
+            }]
+          ]
+        }],
+        ["OS == 'wasi'", {
+          'conditions': [
+            ['emnapi_manual_linking != 0', {
+              'conditions': [
+                ['wasm_threads != 0', {
+                  'dependencies': [
+                    '<!(node -p "require(\'emnapi\').targets"):emnapi'
+                  ],
+                }, {
+                  'dependencies': [
+                    '<!(node -p "require(\'emnapi\').targets"):emnapi_basic'
+                  ],
+                }]
+              ]
+            }]
+          ]
+        }]
       ]
     }
   ]
