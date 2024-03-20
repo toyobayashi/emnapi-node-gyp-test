@@ -6,6 +6,9 @@
         "src/binding.c",
         "src/hello.cpp",
       ],
+      'dependencies': [
+        "<!(node -p \"require('node-addon-api').targets\"):node_addon_api",
+      ],
       "conditions": [
         [
           "OS == 'emscripten'",

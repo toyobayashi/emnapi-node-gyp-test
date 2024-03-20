@@ -32,6 +32,12 @@ module.exports = function () {
           maximum: 2147483648 / 65536,
           shared: true
         })
+      },
+      onCreateWorker () {
+        return new (require('worker_threads').Worker)(path.join(__dirname, './worker.js'), {
+          env: process.env,
+          execArgv: ['--experimental-wasi-unstable-preview1']
+        })
       }
     }).then(({ napiModule }) => napiModule.exports)
   }

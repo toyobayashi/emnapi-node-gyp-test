@@ -21,10 +21,12 @@
 
 #endif
 
+#if !defined(__wasm__) || ((defined(__EMSCRIPTEN__) && defined(__EMSCRIPTEN_PTHREADS__)) || (defined(__wasi__) && defined(_REENTRANT)))
+#define HAVE_THREADS
+#endif
+
 #ifdef __cplusplus
 #define EXTERN_C extern "C"
 #else
 #define EXTERN_C
 #endif
-
-EXTERN_C napi_value js_hello(napi_env env, napi_callback_info info);
