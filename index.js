@@ -26,6 +26,7 @@ module.exports = function () {
     return instantiateNapiModule(fs.readFileSync(entry), {
       context: emnapi.getDefaultContext(),
       wasi: new (require('wasi').WASI)({ version: 'preview1' }),
+      asyncWorkPoolSize: process.env.UV_THREADPOOL_SIZE || 4,
       overwriteImports (imports) {
         imports.env.memory = new WebAssembly.Memory({
           initial: 16777216 / 65536,

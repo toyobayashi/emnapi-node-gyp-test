@@ -20,9 +20,9 @@
     "start": "node ./main.js"
   },
   "dependencies": {
-    "@emnapi/core": "1.0.0",
-    "@emnapi/runtime": "1.0.0",
-    "emnapi": "1.0.0",
+    "@emnapi/core": "1.1.0",
+    "@emnapi/runtime": "1.1.0",
+    "emnapi": "1.1.0",
     "node-addon-api": "*"
   },
   "devDependencies": {
