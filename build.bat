@@ -8,7 +8,7 @@ set AR_target=emar.bat
 set CC_target=emcc.bat
 set CXX_target=em++.bat
 
-call emmake.bat npx node-gyp rebuild -C %~dp0 --verbose --arch=wasm32 --nodedir=%~dp0node_modules/emnapi -- -f make-linux -Demnapi_manual_linking=1 %*
+call emmake.bat npx node-gyp rebuild -C %~dp0 --verbose --arch=wasm32 --nodedir=%~dp0node_modules/emnapi -- -f make -Demnapi_manual_linking=1 %*
 
 @REM call npx.cmd node-gyp clean -C %~dp0
 @REM call npx.cmd node-gyp configure -C %~dp0 --arch=wasm32 --nodedir=%~dp0node_modules/emnapi -- -f make %*

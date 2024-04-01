@@ -33,7 +33,7 @@
             ]
           },
         ],
-        ["OS in ' unknown'", {
+        ["OS in ' wasm unknown'", {
           'conditions': [
             ['emnapi_manual_linking != 0', {
               'dependencies': [

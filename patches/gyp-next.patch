@@ -1,7 +1,7 @@
 From 6c9a795c263d3b68b5d1598dfa484ce3e111e7da Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 22:55:37 +0800
-Subject: [PATCH 01/16] fix: support cross compiling for wasm with make
+Subject: [PATCH 01/18] fix: support cross compiling for wasm with make
  generator
 
 ---
@@ -58,7 +58,7 @@ index 1b99749..e6e95a3 100644
 From 326246b749c5697d1a829c36c06e042cf2417450 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 12:39:23 +0800
-Subject: [PATCH 02/16] fix: lint
+Subject: [PATCH 02/18] fix: lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -94,7 +94,7 @@ index e6e95a3..3036a08 100644
 From 9bc78054b675b320bb980de14cabd0a2240d2ac9 Mon Sep 17 00:00:00 2001
 From: Toyo Li <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 21:04:38 +0800
-Subject: [PATCH 03/16] refactor for readability
+Subject: [PATCH 03/18] refactor for readability
 
 Co-authored-by: Christian Clauss <cclauss@me.com>
 ---
@@ -124,7 +124,7 @@ index 3036a08..ba9be4b 100644
 From 882c1f9bdb3774dc686ba84ac047ab0abd64f70a Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 00:09:08 +0800
-Subject: [PATCH 04/16] replace separator in make generator on Windows
+Subject: [PATCH 04/18] replace separator in make generator on Windows
 
 ---
  pylib/gyp/generator/make.py | 7 ++++++-
@@ -166,7 +166,7 @@ index ba9be4b..f058936 100644
 From 82d5d76bdcae91760aab25a582ad726974c99936 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 09:02:09 +0800
-Subject: [PATCH 05/16] snake_case
+Subject: [PATCH 05/18] snake_case
 
 ---
  pylib/gyp/generator/make.py | 4 ++--
@@ -198,7 +198,7 @@ index f058936..f25800f 100644
 From 6a757fc3e38f50d0e294a6e369c42a53a4a382bb Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:55:29 +0800
-Subject: [PATCH 06/16] found more place to replace sep
+Subject: [PATCH 06/18] found more place to replace sep
 
 ---
  pylib/gyp/generator/make.py | 18 ++++++------------
@@ -259,7 +259,7 @@ index f25800f..5635299 100644
 From 7fd6b7eb74e5305ff77afd2ba85cc652de82dd1d Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:58:45 +0800
-Subject: [PATCH 07/16] lint
+Subject: [PATCH 07/18] lint
 
 ---
  pylib/gyp/generator/make.py | 4 +++-
@@ -284,7 +284,7 @@ index 5635299..ab1a120 100644
 From be69f9f616333300857e7d4d403ac289f1a5cc87 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 18:51:53 +0800
-Subject: [PATCH 08/16] replace sep in compiler path
+Subject: [PATCH 08/18] replace sep in compiler path
 
 ---
  pylib/gyp/generator/make.py | 33 ++++++++++++++++++++++-----------
@@ -352,7 +352,7 @@ index ab1a120..d406c4a 100644
 From 7a62b19447d3011dc36ad3a1c74dffed733fa67f Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 21:51:39 +0800
-Subject: [PATCH 09/16] fix sed unterminated `s' command error on Windows
+Subject: [PATCH 09/18] fix sed unterminated `s' command error on Windows
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -381,7 +381,7 @@ index d406c4a..beb045e 100644
 From 64290b6abce447735faf6ea9958325cf5483cde1 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 21:59:19 +0800
-Subject: [PATCH 10/16] path includes `\` so replace the ended `\` only
+Subject: [PATCH 10/18] path includes `\` so replace the ended `\` only
 
 ---
  pylib/gyp/generator/make.py | 2 +-
@@ -404,7 +404,7 @@ index beb045e..fa00e16 100644
 From 77b8e9cd4397d37e34855a835d5314b6caf9505e Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:54:44 +0800
-Subject: [PATCH 11/16] replace `\` with `/` in depfile on win
+Subject: [PATCH 11/18] replace `\` with `/` in depfile on win
 
 ---
  pylib/gyp/generator/make.py | 10 +++++++---
@@ -440,7 +440,7 @@ index fa00e16..68bc2ef 100644
 From 9f110ec52f19268f2239702c1a7ac6a8570cb6a6 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 29 Jan 2024 00:04:24 +0800
-Subject: [PATCH 12/16] lint
+Subject: [PATCH 12/18] lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++----
@@ -476,7 +476,7 @@ index 68bc2ef..c7f5445 100644
 From 1d82674d9a4acd4722e00fafa27fe3d877192c36 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 18:12:33 +0800
-Subject: [PATCH 13/16] fix: trailing `\` in raw string
+Subject: [PATCH 13/18] fix: trailing `\` in raw string
 
 ---
  pylib/gyp/generator/make.py | 4 ++--
@@ -501,7 +501,7 @@ index c7f5445..142a59c 100644
 From 97d765cf1579949517db83f83f10e4ae2fb81e02 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 18:41:22 +0800
-Subject: [PATCH 14/16] revert: flavor can be set via `-f make-linux` so no
+Subject: [PATCH 14/18] revert: flavor can be set via `-f make-linux` so no
  need to change the mac params
 
 ---
@@ -526,7 +526,7 @@ index 142a59c..aaad35d 100644
 From ef484854230ef3e52cd1e8d59a9f7360acab6a07 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 20:31:41 +0800
-Subject: [PATCH 15/16] fix: also do not use raw string in windows branch due
+Subject: [PATCH 15/18] fix: also do not use raw string in windows branch due
  to trailing `\` break editor highlight
 
 ---
@@ -552,7 +552,7 @@ index aaad35d..b70dde6 100644
 From f4410afd4d698c781ffcb283e6439c080386b935 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 20 Mar 2024 17:05:17 +0800
-Subject: [PATCH 16/16] fix: respect user specified AR_target environment
+Subject: [PATCH 16/18] fix: respect user specified AR_target environment
  variable
 
 ---
@@ -572,3 +572,162 @@ index b70dde6..28d6422 100644
  PLI.target ?= %(PLI.target)s
  
  # C++ apps need to be linked with g++.
+
+From 840574c0c9d79918d588347afa9be3d111aef4ee Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Mon, 1 Apr 2024 18:15:29 +0800
+Subject: [PATCH 17/18] feat: detect wasm flavor
+
+---
+ pylib/gyp/common.py         | 44 +++++++++++++++++++++++++++++++++++++
+ pylib/gyp/generator/make.py |  4 ++--
+ 2 files changed, 46 insertions(+), 2 deletions(-)
+
+diff --git a/pylib/gyp/common.py b/pylib/gyp/common.py
+index b73a0c5..64277f7 100644
+--- a/pylib/gyp/common.py
++++ b/pylib/gyp/common.py
+@@ -422,6 +422,37 @@ def EnsureDirExists(path):
+     except OSError:
+         pass
+ 
++def GetCrossCompilerPredefines():
++    CC = os.environ.get("CC_target") or os.environ.get("CC")
++    CFLAGS = os.environ.get("CFLAGS")
++    CXX = os.environ.get("CXX_target") or os.environ.get("CXX")
++    CXXFLAGS = os.environ.get("CXXFLAGS")
++    cmd = []
++
++    if CC:
++        cmd += CC.split(" ")
++        if CFLAGS:
++            cmd += CFLAGS.split(" ")
++    elif CXX:
++        cmd += CXX.split(" ")
++        if CXXFLAGS:
++            cmd += CXXFLAGS.split(" ")
++    else:
++        return None
++
++    out = subprocess.Popen(
++        [*cmd, "-dM", "-E", "-x", "c", "/dev/null"],
++        stdout=subprocess.PIPE, stderr=subprocess.STDOUT
++    )
++    lines = out.communicate()[0].decode("utf-8").split("\n")
++    defines = {}
++    for line in lines:
++        if not line:
++            continue
++        define_directive, key, *value = line.split(" ")
++        assert define_directive == "#define"
++        defines[key] = " ".join(value)
++    return defines
+ 
+ def GetFlavor(params):
+     """Returns |params.flavor| if it's set, the system's default flavor else."""
+@@ -433,6 +464,19 @@ def GetFlavor(params):
+ 
+     if "flavor" in params:
+         return params["flavor"]
++
++    try:
++        defines = GetCrossCompilerPredefines()
++        if "__EMSCRIPTEN__" in defines:
++            return "emscripten"
++        if "__wasm__" in defines:
++            if "__wasi__" in defines:
++                return "wasi"
++            else:
++                return "wasm"
++    except Exception:
++        pass
++
+     if sys.platform in flavors:
+         return flavors[sys.platform]
+     if sys.platform.startswith("sunos"):
+diff --git a/pylib/gyp/generator/make.py b/pylib/gyp/generator/make.py
+index 28d6422..392d900 100644
+--- a/pylib/gyp/generator/make.py
++++ b/pylib/gyp/generator/make.py
+@@ -2457,9 +2457,9 @@ def CalculateMakefilePath(build_file, base_name):
+     copy_archive_arguments = "-af"
+     makedep_arguments = "-MMD"
+ 
+-    # some linkers don't support --start-group/--end-group (e.g. wasm-ld)
++    # wasm-ld doesn't support --start-group/--end-group
+     link_commands = LINK_COMMANDS_LINUX
+-    if gyp.common.CrossCompileRequested():
++    if flavor in ["wasi", "wasm"]:
+         link_commands = link_commands.replace(' -Wl,--start-group', '').replace(
+             ' -Wl,--end-group', ''
+         )
+
+From 3a727601607f935f8349f0620387ad321118ba7c Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Mon, 1 Apr 2024 18:23:46 +0800
+Subject: [PATCH 18/18] lint: Too many return statements
+
+---
+ pylib/gyp/common.py | 35 +++++++++++++++++++----------------
+ 1 file changed, 19 insertions(+), 16 deletions(-)
+
+diff --git a/pylib/gyp/common.py b/pylib/gyp/common.py
+index 64277f7..0e5abe0 100644
+--- a/pylib/gyp/common.py
++++ b/pylib/gyp/common.py
+@@ -454,7 +454,7 @@ def GetCrossCompilerPredefines():
+         defines[key] = " ".join(value)
+     return defines
+ 
+-def GetFlavor(params):
++def GetFlavorByPlatform():
+     """Returns |params.flavor| if it's set, the system's default flavor else."""
+     flavors = {
+         "cygwin": "win",
+@@ -462,21 +462,6 @@ def GetFlavor(params):
+         "darwin": "mac",
+     }
+ 
+-    if "flavor" in params:
+-        return params["flavor"]
+-
+-    try:
+-        defines = GetCrossCompilerPredefines()
+-        if "__EMSCRIPTEN__" in defines:
+-            return "emscripten"
+-        if "__wasm__" in defines:
+-            if "__wasi__" in defines:
+-                return "wasi"
+-            else:
+-                return "wasm"
+-    except Exception:
+-        pass
+-
+     if sys.platform in flavors:
+         return flavors[sys.platform]
+     if sys.platform.startswith("sunos"):
+@@ -496,6 +481,24 @@ def GetFlavor(params):
+ 
+     return "linux"
+ 
++def GetFlavor(params):
++    if "flavor" in params:
++        return params["flavor"]
++
++    try:
++        defines = GetCrossCompilerPredefines()
++        if "__EMSCRIPTEN__" in defines:
++            return "emscripten"
++        if "__wasm__" in defines:
++            if "__wasi__" in defines:
++                return "wasi"
++            else:
++                return "wasm"
++    except Exception:
++        pass
++
++    return GetFlavorByPlatform()
++
+ 
+ def CopyTool(flavor, out_path, generator_flags={}):
+     """Finds (flock|mac|win)_tool.gyp in the gyp directory and copies it
