@@ -10,7 +10,7 @@ export AR_target=emar
 export CC_target=emcc
 export CXX_target=em++
 
-emmake node-gyp rebuild -C $__dirname --verbose --arch=wasm32 --nodedir=$__dirname/node_modules/emnapi -- -f make -Demnapi_manual_linking=1 "$@"
+emmake node-gyp rebuild -C $__dirname --verbose --arch=wasm32 --nodedir=$__dirname/node_modules/emnapi -- -Demnapi_manual_linking=1 "$@"
 
 # node-gyp clean -C $__dirname
 # node-gyp configure -C $__dirname --nodedir=$__dirname/node_modules/emnapi -- -f make -DOS=emscripten
