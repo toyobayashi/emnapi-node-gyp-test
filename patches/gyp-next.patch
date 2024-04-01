@@ -1,7 +1,7 @@
 From 6c9a795c263d3b68b5d1598dfa484ce3e111e7da Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 22:55:37 +0800
-Subject: [PATCH 01/19] fix: support cross compiling for wasm with make
+Subject: [PATCH 01/24] fix: support cross compiling for wasm with make
  generator
 
 ---
@@ -58,7 +58,7 @@ index 1b99749..e6e95a3 100644
 From 326246b749c5697d1a829c36c06e042cf2417450 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 12:39:23 +0800
-Subject: [PATCH 02/19] fix: lint
+Subject: [PATCH 02/24] fix: lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -94,7 +94,7 @@ index e6e95a3..3036a08 100644
 From 9bc78054b675b320bb980de14cabd0a2240d2ac9 Mon Sep 17 00:00:00 2001
 From: Toyo Li <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 21:04:38 +0800
-Subject: [PATCH 03/19] refactor for readability
+Subject: [PATCH 03/24] refactor for readability
 
 Co-authored-by: Christian Clauss <cclauss@me.com>
 ---
@@ -124,7 +124,7 @@ index 3036a08..ba9be4b 100644
 From 882c1f9bdb3774dc686ba84ac047ab0abd64f70a Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 00:09:08 +0800
-Subject: [PATCH 04/19] replace separator in make generator on Windows
+Subject: [PATCH 04/24] replace separator in make generator on Windows
 
 ---
  pylib/gyp/generator/make.py | 7 ++++++-
@@ -166,7 +166,7 @@ index ba9be4b..f058936 100644
 From 82d5d76bdcae91760aab25a582ad726974c99936 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 09:02:09 +0800
-Subject: [PATCH 05/19] snake_case
+Subject: [PATCH 05/24] snake_case
 
 ---
  pylib/gyp/generator/make.py | 4 ++--
@@ -198,7 +198,7 @@ index f058936..f25800f 100644
 From 6a757fc3e38f50d0e294a6e369c42a53a4a382bb Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:55:29 +0800
-Subject: [PATCH 06/19] found more place to replace sep
+Subject: [PATCH 06/24] found more place to replace sep
 
 ---
  pylib/gyp/generator/make.py | 18 ++++++------------
@@ -259,7 +259,7 @@ index f25800f..5635299 100644
 From 7fd6b7eb74e5305ff77afd2ba85cc652de82dd1d Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:58:45 +0800
-Subject: [PATCH 07/19] lint
+Subject: [PATCH 07/24] lint
 
 ---
  pylib/gyp/generator/make.py | 4 +++-
@@ -284,7 +284,7 @@ index 5635299..ab1a120 100644
 From be69f9f616333300857e7d4d403ac289f1a5cc87 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 18:51:53 +0800
-Subject: [PATCH 08/19] replace sep in compiler path
+Subject: [PATCH 08/24] replace sep in compiler path
 
 ---
  pylib/gyp/generator/make.py | 33 ++++++++++++++++++++++-----------
@@ -352,7 +352,7 @@ index ab1a120..d406c4a 100644
 From 7a62b19447d3011dc36ad3a1c74dffed733fa67f Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 21:51:39 +0800
-Subject: [PATCH 09/19] fix sed unterminated `s' command error on Windows
+Subject: [PATCH 09/24] fix sed unterminated `s' command error on Windows
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -381,7 +381,7 @@ index d406c4a..beb045e 100644
 From 64290b6abce447735faf6ea9958325cf5483cde1 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 21:59:19 +0800
-Subject: [PATCH 10/19] path includes `\` so replace the ended `\` only
+Subject: [PATCH 10/24] path includes `\` so replace the ended `\` only
 
 ---
  pylib/gyp/generator/make.py | 2 +-
@@ -404,7 +404,7 @@ index beb045e..fa00e16 100644
 From 77b8e9cd4397d37e34855a835d5314b6caf9505e Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:54:44 +0800
-Subject: [PATCH 11/19] replace `\` with `/` in depfile on win
+Subject: [PATCH 11/24] replace `\` with `/` in depfile on win
 
 ---
  pylib/gyp/generator/make.py | 10 +++++++---
@@ -440,7 +440,7 @@ index fa00e16..68bc2ef 100644
 From 9f110ec52f19268f2239702c1a7ac6a8570cb6a6 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 29 Jan 2024 00:04:24 +0800
-Subject: [PATCH 12/19] lint
+Subject: [PATCH 12/24] lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++----
@@ -476,7 +476,7 @@ index 68bc2ef..c7f5445 100644
 From 1d82674d9a4acd4722e00fafa27fe3d877192c36 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 18:12:33 +0800
-Subject: [PATCH 13/19] fix: trailing `\` in raw string
+Subject: [PATCH 13/24] fix: trailing `\` in raw string
 
 ---
  pylib/gyp/generator/make.py | 4 ++--
@@ -501,7 +501,7 @@ index c7f5445..142a59c 100644
 From 97d765cf1579949517db83f83f10e4ae2fb81e02 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 18:41:22 +0800
-Subject: [PATCH 14/19] revert: flavor can be set via `-f make-linux` so no
+Subject: [PATCH 14/24] revert: flavor can be set via `-f make-linux` so no
  need to change the mac params
 
 ---
@@ -526,7 +526,7 @@ index 142a59c..aaad35d 100644
 From ef484854230ef3e52cd1e8d59a9f7360acab6a07 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 20:31:41 +0800
-Subject: [PATCH 15/19] fix: also do not use raw string in windows branch due
+Subject: [PATCH 15/24] fix: also do not use raw string in windows branch due
  to trailing `\` break editor highlight
 
 ---
@@ -552,7 +552,7 @@ index aaad35d..b70dde6 100644
 From f4410afd4d698c781ffcb283e6439c080386b935 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 20 Mar 2024 17:05:17 +0800
-Subject: [PATCH 16/19] fix: respect user specified AR_target environment
+Subject: [PATCH 16/24] fix: respect user specified AR_target environment
  variable
 
 ---
@@ -576,7 +576,7 @@ index b70dde6..28d6422 100644
 From 840574c0c9d79918d588347afa9be3d111aef4ee Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 18:15:29 +0800
-Subject: [PATCH 17/19] feat: detect wasm flavor
+Subject: [PATCH 17/24] feat: detect wasm flavor
 
 ---
  pylib/gyp/common.py         | 44 +++++++++++++++++++++++++++++++++++++
@@ -665,7 +665,7 @@ index 28d6422..392d900 100644
 From 3a727601607f935f8349f0620387ad321118ba7c Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 18:23:46 +0800
-Subject: [PATCH 18/19] lint: Too many return statements
+Subject: [PATCH 18/24] lint: Too many return statements
 
 ---
  pylib/gyp/common.py | 35 +++++++++++++++++++----------------
@@ -735,7 +735,7 @@ index 64277f7..0e5abe0 100644
 From 626f0a6c2dbad075060fe9a390e950de32873e0b Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 21:13:58 +0800
-Subject: [PATCH 19/19] fix get compiler predefines on windows
+Subject: [PATCH 19/24] fix get compiler predefines on windows
 
 ---
  pylib/gyp/common.py | 42 +++++++++++++++++++++++++++++-------------
@@ -791,6 +791,307 @@ index 0e5abe0..125c8a6 100644
 +    finally:
 +        if sys.platform == "win32":
 +            os.unlink(input)
+ 
+ def GetFlavorByPlatform():
+     """Returns |params.flavor| if it's set, the system's default flavor else."""
+
+From 9e9cb995da63d3a77c1ef5302cb75b0a52987426 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Mon, 1 Apr 2024 21:33:14 +0800
+Subject: [PATCH 20/24] GetCrossCompilerPredefines always return dict
+
+---
+ pylib/gyp/common.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pylib/gyp/common.py b/pylib/gyp/common.py
+index 125c8a6..dae8873 100644
+--- a/pylib/gyp/common.py
++++ b/pylib/gyp/common.py
+@@ -428,6 +428,7 @@ def GetCrossCompilerPredefines():
+     CXX = os.environ.get("CXX_target") or os.environ.get("CXX")
+     CXXFLAGS = os.environ.get("CXXFLAGS")
+     cmd = []
++    defines = {}
+ 
+     if CC:
+         cmd += CC.split(" ")
+@@ -438,7 +439,7 @@ def GetCrossCompilerPredefines():
+         if CXXFLAGS:
+             cmd += CXXFLAGS.split(" ")
+     else:
+-        return None
++        return defines
+ 
+     if sys.platform == "win32":
+         fd, input = tempfile.mkstemp(suffix=".c")
+@@ -458,7 +459,6 @@ def GetCrossCompilerPredefines():
+         )
+         lines = out.communicate()[0].decode("utf-8").replace(
+             "\r\n", "\n").split("\n")
+-        defines = {}
+         for line in lines:
+             if not line:
+                 continue
+
+From 3b49a7bbb6b849ce4bae9ad9976be7fbed547869 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Mon, 1 Apr 2024 21:53:02 +0800
+Subject: [PATCH 21/24] do not broad exceptions
+
+---
+ pylib/gyp/common.py | 24 +++++++-----------------
+ 1 file changed, 7 insertions(+), 17 deletions(-)
+
+diff --git a/pylib/gyp/common.py b/pylib/gyp/common.py
+index dae8873..a57ba65 100644
+--- a/pylib/gyp/common.py
++++ b/pylib/gyp/common.py
+@@ -422,7 +422,7 @@ def EnsureDirExists(path):
+     except OSError:
+         pass
+ 
+-def GetCrossCompilerPredefines():
++def GetCrossCompilerPredefines():  # -> dict
+     CC = os.environ.get("CC_target") or os.environ.get("CC")
+     CFLAGS = os.environ.get("CFLAGS")
+     CXX = os.environ.get("CXX_target") or os.environ.get("CXX")
+@@ -443,11 +443,7 @@ def GetCrossCompilerPredefines():
+ 
+     if sys.platform == "win32":
+         fd, input = tempfile.mkstemp(suffix=".c")
+-        try:
+-            os.close(fd)
+-        except Exception:
+-            os.unlink(input)
+-            raise
++        os.close(fd)
+     else:
+         input = "/dev/null"
+ 
+@@ -501,17 +497,11 @@ def GetFlavor(params):
+     if "flavor" in params:
+         return params["flavor"]
+ 
+-    try:
+-        defines = GetCrossCompilerPredefines()
+-        if "__EMSCRIPTEN__" in defines:
+-            return "emscripten"
+-        if "__wasm__" in defines:
+-            if "__wasi__" in defines:
+-                return "wasi"
+-            else:
+-                return "wasm"
+-    except Exception:
+-        pass
++    defines = GetCrossCompilerPredefines()
++    if "__EMSCRIPTEN__" in defines:
++        return "emscripten"
++    if "__wasm__" in defines:
++        return "wasi" if "__wasi__" in defines else "wasm"
+ 
+     return GetFlavorByPlatform()
+ 
+
+From 83274d90e55f0e54cf20fbd8996342513ee462e9 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Mon, 1 Apr 2024 23:40:16 +0800
+Subject: [PATCH 22/24] test: GetCrossCompilerPredefines
+
+---
+ pylib/gyp/common_test.py | 61 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 60 insertions(+), 1 deletion(-)
+
+diff --git a/pylib/gyp/common_test.py b/pylib/gyp/common_test.py
+index 0534408..f7383e4 100755
+--- a/pylib/gyp/common_test.py
++++ b/pylib/gyp/common_test.py
+@@ -9,7 +9,10 @@
+ import gyp.common
+ import unittest
+ import sys
+-
++import os
++import subprocess
++from unittest import mock
++from unittest.mock import patch, MagicMock
+ 
+ class TestTopologicallySorted(unittest.TestCase):
+     def test_Valid(self):
+@@ -73,6 +76,62 @@ def test_platform_default(self):
+     def test_param(self):
+         self.assertFlavor("foobar", "linux2", {"flavor": "foobar"})
+ 
++    class MockCommunicate:
++        def __init__(self, stdout):
++            self.stdout = stdout
++
++        def decode(self, encoding):
++            return self.stdout
++
++    @mock.patch("os.close")
++    @mock.patch("os.unlink")
++    @mock.patch("tempfile.mkstemp")
++    def test_GetCrossCompilerPredefines(self, mock_mkstemp, mock_unlink, mock_close):
++        mock_close.return_value = None
++        mock_unlink.return_value = None
++        mock_mkstemp.return_value = (0, "temp.c")
++
++        def mock_run(env, defines_stdout):
++            with mock.patch("subprocess.Popen") as mock_popen:
++                mock_process = MagicMock()
++                mock_process.communicate.return_value = (
++                    TestGetFlavor.MockCommunicate(defines_stdout), None)
++                mock_process.stdout = MagicMock()
++                mock_popen.return_value = mock_process
++                expected_input = "temp.c" if sys.platform == "win32" else "/dev/null"
++                with mock.patch.dict(os.environ, env):
++                    defines = gyp.common.GetCrossCompilerPredefines()
++                    flavor = gyp.common.GetFlavor({})
++                if env.get("CC_target"):
++                    mock_popen.assert_called_with(
++                        [env["CC_target"], "-dM", "-E", "-x", "c", expected_input],
++                        shell=sys.platform == "win32",
++                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
++                return [defines, flavor]
++
++        [defines1, _] = mock_run({}, "")
++        self.assertDictEqual({}, defines1)
++
++        [defines2, flavor2] = mock_run(
++            { "CC_target": "/opt/wasi-sdk/bin/clang" },
++            "#define __wasm__ 1\n#define __wasi__ 1\n"
++        )
++        self.assertDictEqual({ "__wasm__": "1", "__wasi__": "1" }, defines2)
++        self.assertEqual("wasi", flavor2)
++
++        [defines3, flavor3] = mock_run(
++            { "CC_target": "/opt/wasi-sdk/bin/clang" },
++            "#define __wasm__ 1\n"
++        )
++        self.assertDictEqual({ "__wasm__": "1" }, defines3)
++        self.assertEqual("wasm", flavor3)
++
++        [defines4, flavor4] = mock_run(
++            { "CC_target": "/emsdk/upstream/emscripten/emcc" },
++            "#define __EMSCRIPTEN__ 1\n"
++        )
++        self.assertDictEqual({ "__EMSCRIPTEN__": "1" }, defines4)
++        self.assertEqual("emscripten", flavor4)
+ 
+ if __name__ == "__main__":
+     unittest.main()
+
+From 04024d4db2ac0d4d29f75604a9bf3b730710c169 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Mon, 1 Apr 2024 23:42:19 +0800
+Subject: [PATCH 23/24] fix lint
+
+---
+ pylib/gyp/common_test.py | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/pylib/gyp/common_test.py b/pylib/gyp/common_test.py
+index f7383e4..43b2254 100755
+--- a/pylib/gyp/common_test.py
++++ b/pylib/gyp/common_test.py
+@@ -11,7 +11,6 @@
+ import sys
+ import os
+ import subprocess
+-from unittest import mock
+ from unittest.mock import patch, MagicMock
+ 
+ class TestTopologicallySorted(unittest.TestCase):
+@@ -83,23 +82,23 @@ def __init__(self, stdout):
+         def decode(self, encoding):
+             return self.stdout
+ 
+-    @mock.patch("os.close")
+-    @mock.patch("os.unlink")
+-    @mock.patch("tempfile.mkstemp")
++    @patch("os.close")
++    @patch("os.unlink")
++    @patch("tempfile.mkstemp")
+     def test_GetCrossCompilerPredefines(self, mock_mkstemp, mock_unlink, mock_close):
+         mock_close.return_value = None
+         mock_unlink.return_value = None
+         mock_mkstemp.return_value = (0, "temp.c")
+ 
+         def mock_run(env, defines_stdout):
+-            with mock.patch("subprocess.Popen") as mock_popen:
++            with patch("subprocess.Popen") as mock_popen:
+                 mock_process = MagicMock()
+                 mock_process.communicate.return_value = (
+                     TestGetFlavor.MockCommunicate(defines_stdout), None)
+                 mock_process.stdout = MagicMock()
+                 mock_popen.return_value = mock_process
+                 expected_input = "temp.c" if sys.platform == "win32" else "/dev/null"
+-                with mock.patch.dict(os.environ, env):
++                with patch.dict(os.environ, env):
+                     defines = gyp.common.GetCrossCompilerPredefines()
+                     flavor = gyp.common.GetFlavor({})
+                 if env.get("CC_target"):
+
+From a6cfb16c0cbf481069b4231bf63e16587cf4eeeb Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Mon, 1 Apr 2024 23:50:01 +0800
+Subject: [PATCH 24/24] refactor: do not put so many lines in try block
+
+---
+ pylib/gyp/common.py | 36 ++++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/pylib/gyp/common.py b/pylib/gyp/common.py
+index a57ba65..01dfd30 100644
+--- a/pylib/gyp/common.py
++++ b/pylib/gyp/common.py
+@@ -443,28 +443,32 @@ def GetCrossCompilerPredefines():  # -> dict
+ 
+     if sys.platform == "win32":
+         fd, input = tempfile.mkstemp(suffix=".c")
+-        os.close(fd)
++        try:
++            os.close(fd)
++            out = subprocess.Popen(
++                [*cmd, "-dM", "-E", "-x", "c", input],
++                shell=True,
++                stdout=subprocess.PIPE, stderr=subprocess.STDOUT
++            )
++        finally:
++            os.unlink(input)
+     else:
+         input = "/dev/null"
+-
+-    try:
+         out = subprocess.Popen(
+             [*cmd, "-dM", "-E", "-x", "c", input],
+-            shell=sys.platform == "win32",
++            shell=False,
+             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+         )
+-        lines = out.communicate()[0].decode("utf-8").replace(
+-            "\r\n", "\n").split("\n")
+-        for line in lines:
+-            if not line:
+-                continue
+-            define_directive, key, *value = line.split(" ")
+-            assert define_directive == "#define"
+-            defines[key] = " ".join(value)
+-        return defines
+-    finally:
+-        if sys.platform == "win32":
+-            os.unlink(input)
++
++    lines = out.communicate()[0].decode("utf-8").replace(
++        "\r\n", "\n").split("\n")
++    for line in lines:
++        if not line:
++            continue
++        define_directive, key, *value = line.split(" ")
++        assert define_directive == "#define"
++        defines[key] = " ".join(value)
++    return defines
  
  def GetFlavorByPlatform():
      """Returns |params.flavor| if it's set, the system's default flavor else."""
