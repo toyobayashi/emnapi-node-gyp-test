@@ -11,7 +11,7 @@ spawnSync('patch', ['-p1', '-i', join(__dirname, '../patches/node-gyp.patch')], 
   stdio: 'inherit'
 })
 
-spawnSync('patch', ['-p1', '-i', join(__dirname, '../patches/emnapi.patch')], {
+spawnSync('patch', ['-p3', '-i', join(__dirname, '../patches/emnapi.patch')], {
   cwd: join(__dirname, '../node_modules/emnapi'),
   stdio: 'inherit'
 })
