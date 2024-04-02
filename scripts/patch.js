@@ -6,6 +6,11 @@ spawnSync('patch', ['-p1', '-i', join(__dirname, '../patches/gyp-next.patch')], 
   stdio: 'inherit'
 })
 
+spawnSync('patch', ['-p1', '-i', join(__dirname, '../patches/gyp-next-2.patch')], {
+  cwd: join(__dirname, '../node_modules/node-gyp/gyp'),
+  stdio: 'inherit'
+})
+
 spawnSync('patch', ['-p1', '-i', join(__dirname, '../patches/node-gyp.patch')], {
   cwd: join(__dirname, '../node_modules/node-gyp'),
   stdio: 'inherit'

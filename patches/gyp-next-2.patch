@@ -1,0 +1,90 @@
+From 4c049a0a283951886636aedbcbe629ae6443286c Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Tue, 2 Apr 2024 19:26:10 +0800
+Subject: [PATCH] fix: failed to detect flavor if compiler path include white
+ spaces
+
+---
+ pylib/gyp/common.py      |  9 +++++----
+ pylib/gyp/common_test.py | 22 +++++++++++++++++++++-
+ 2 files changed, 26 insertions(+), 5 deletions(-)
+
+diff --git a/pylib/gyp/common.py b/pylib/gyp/common.py
+index db64dc5..ce498fb 100644
+--- a/pylib/gyp/common.py
++++ b/pylib/gyp/common.py
+@@ -9,6 +9,7 @@ import re
+ import tempfile
+ import sys
+ import subprocess
++import shlex
+ 
+ from collections.abc import MutableSet
+ 
+@@ -425,13 +426,13 @@ def EnsureDirExists(path):
+ def GetCrossCompilerPredefines():  # -> dict
+     cmd = []
+     if CC := os.environ.get("CC_target") or os.environ.get("CC"):
+-        cmd += CC.split(" ")
++        cmd += shlex.split(CC)
+         if CFLAGS := os.environ.get("CFLAGS"):
+-            cmd += CFLAGS.split(" ")
++            cmd += shlex.split(CFLAGS)
+     elif CXX := os.environ.get("CXX_target") or os.environ.get("CXX"):
+-        cmd += CXX.split(" ")
++        cmd += shlex.split(CXX)
+         if CXXFLAGS := os.environ.get("CXXFLAGS"):
+-            cmd += CXXFLAGS.split(" ")
++            cmd += shlex.split(CXXFLAGS)
+     else:
+         return {}
+ 
+diff --git a/pylib/gyp/common_test.py b/pylib/gyp/common_test.py
+index 43b2254..da78d39 100755
+--- a/pylib/gyp/common_test.py
++++ b/pylib/gyp/common_test.py
+@@ -11,6 +11,7 @@ import unittest
+ import sys
+ import os
+ import subprocess
++import shlex
+ from unittest.mock import patch, MagicMock
+ 
+ class TestTopologicallySorted(unittest.TestCase):
+@@ -103,7 +104,11 @@ class TestGetFlavor(unittest.TestCase):
+                     flavor = gyp.common.GetFlavor({})
+                 if env.get("CC_target"):
+                     mock_popen.assert_called_with(
+-                        [env["CC_target"], "-dM", "-E", "-x", "c", expected_input],
++                        [
++                            *shlex.split(env["CC_target"]),
++                            *(shlex.split(env["CFLAGS"]) if env.get("CFLAGS") else []),
++                            "-dM", "-E", "-x", "c", expected_input
++                        ],
+                         shell=sys.platform == "win32",
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                 return [defines, flavor]
+@@ -132,5 +137,20 @@ class TestGetFlavor(unittest.TestCase):
+         self.assertDictEqual({ "__EMSCRIPTEN__": "1" }, defines4)
+         self.assertEqual("emscripten", flavor4)
+ 
++        # Test path which include white space
++        [defines5, flavor5] = mock_run(
++            {
++                "CC_target": "\"/Users/Toyo Li/wasi-sdk/bin/clang\"",
++                "CFLAGS": "--target=wasm32-wasi-threads -pthread"
++            },
++            "#define __wasm__ 1\n#define __wasi__ 1\n#define _REENTRANT 1\n"
++        )
++        self.assertDictEqual({
++            "__wasm__": "1",
++            "__wasi__": "1",
++            "_REENTRANT": "1"
++        }, defines5)
++        self.assertEqual("wasi", flavor5)
++
+ if __name__ == "__main__":
+     unittest.main()
+-- 
+2.39.3 (Apple Git-145)
+

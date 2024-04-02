@@ -1,7 +1,7 @@
 From 6c9a795c263d3b68b5d1598dfa484ce3e111e7da Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Thu, 18 Jan 2024 22:55:37 +0800
-Subject: [PATCH 01/25] fix: support cross compiling for wasm with make
+Subject: [PATCH 01/26] fix: support cross compiling for wasm with make
  generator
 
 ---
@@ -58,7 +58,7 @@ index 1b99749..e6e95a3 100644
 From 326246b749c5697d1a829c36c06e042cf2417450 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 12:39:23 +0800
-Subject: [PATCH 02/25] fix: lint
+Subject: [PATCH 02/26] fix: lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -94,7 +94,7 @@ index e6e95a3..3036a08 100644
 From 9bc78054b675b320bb980de14cabd0a2240d2ac9 Mon Sep 17 00:00:00 2001
 From: Toyo Li <lifenglin314@outlook.com>
 Date: Fri, 19 Jan 2024 21:04:38 +0800
-Subject: [PATCH 03/25] refactor for readability
+Subject: [PATCH 03/26] refactor for readability
 
 Co-authored-by: Christian Clauss <cclauss@me.com>
 ---
@@ -124,7 +124,7 @@ index 3036a08..ba9be4b 100644
 From 882c1f9bdb3774dc686ba84ac047ab0abd64f70a Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 00:09:08 +0800
-Subject: [PATCH 04/25] replace separator in make generator on Windows
+Subject: [PATCH 04/26] replace separator in make generator on Windows
 
 ---
  pylib/gyp/generator/make.py | 7 ++++++-
@@ -166,7 +166,7 @@ index ba9be4b..f058936 100644
 From 82d5d76bdcae91760aab25a582ad726974c99936 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 24 Jan 2024 09:02:09 +0800
-Subject: [PATCH 05/25] snake_case
+Subject: [PATCH 05/26] snake_case
 
 ---
  pylib/gyp/generator/make.py | 4 ++--
@@ -198,7 +198,7 @@ index f058936..f25800f 100644
 From 6a757fc3e38f50d0e294a6e369c42a53a4a382bb Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:55:29 +0800
-Subject: [PATCH 06/25] found more place to replace sep
+Subject: [PATCH 06/26] found more place to replace sep
 
 ---
  pylib/gyp/generator/make.py | 18 ++++++------------
@@ -259,7 +259,7 @@ index f25800f..5635299 100644
 From 7fd6b7eb74e5305ff77afd2ba85cc652de82dd1d Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 00:58:45 +0800
-Subject: [PATCH 07/25] lint
+Subject: [PATCH 07/26] lint
 
 ---
  pylib/gyp/generator/make.py | 4 +++-
@@ -284,7 +284,7 @@ index 5635299..ab1a120 100644
 From be69f9f616333300857e7d4d403ac289f1a5cc87 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 18:51:53 +0800
-Subject: [PATCH 08/25] replace sep in compiler path
+Subject: [PATCH 08/26] replace sep in compiler path
 
 ---
  pylib/gyp/generator/make.py | 33 ++++++++++++++++++++++-----------
@@ -352,7 +352,7 @@ index ab1a120..d406c4a 100644
 From 7a62b19447d3011dc36ad3a1c74dffed733fa67f Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 21:51:39 +0800
-Subject: [PATCH 09/25] fix sed unterminated `s' command error on Windows
+Subject: [PATCH 09/26] fix sed unterminated `s' command error on Windows
 
 ---
  pylib/gyp/generator/make.py | 8 ++++++--
@@ -381,7 +381,7 @@ index d406c4a..beb045e 100644
 From 64290b6abce447735faf6ea9958325cf5483cde1 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 21:59:19 +0800
-Subject: [PATCH 10/25] path includes `\` so replace the ended `\` only
+Subject: [PATCH 10/26] path includes `\` so replace the ended `\` only
 
 ---
  pylib/gyp/generator/make.py | 2 +-
@@ -404,7 +404,7 @@ index beb045e..fa00e16 100644
 From 77b8e9cd4397d37e34855a835d5314b6caf9505e Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:54:44 +0800
-Subject: [PATCH 11/25] replace `\` with `/` in depfile on win
+Subject: [PATCH 11/26] replace `\` with `/` in depfile on win
 
 ---
  pylib/gyp/generator/make.py | 10 +++++++---
@@ -440,7 +440,7 @@ index fa00e16..68bc2ef 100644
 From 9f110ec52f19268f2239702c1a7ac6a8570cb6a6 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 29 Jan 2024 00:04:24 +0800
-Subject: [PATCH 12/25] lint
+Subject: [PATCH 12/26] lint
 
 ---
  pylib/gyp/generator/make.py | 8 ++++----
@@ -476,7 +476,7 @@ index 68bc2ef..c7f5445 100644
 From 1d82674d9a4acd4722e00fafa27fe3d877192c36 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 18:12:33 +0800
-Subject: [PATCH 13/25] fix: trailing `\` in raw string
+Subject: [PATCH 13/26] fix: trailing `\` in raw string
 
 ---
  pylib/gyp/generator/make.py | 4 ++--
@@ -501,7 +501,7 @@ index c7f5445..142a59c 100644
 From 97d765cf1579949517db83f83f10e4ae2fb81e02 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 18:41:22 +0800
-Subject: [PATCH 14/25] revert: flavor can be set via `-f make-linux` so no
+Subject: [PATCH 14/26] revert: flavor can be set via `-f make-linux` so no
  need to change the mac params
 
 ---
@@ -526,7 +526,7 @@ index 142a59c..aaad35d 100644
 From ef484854230ef3e52cd1e8d59a9f7360acab6a07 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 20:31:41 +0800
-Subject: [PATCH 15/25] fix: also do not use raw string in windows branch due
+Subject: [PATCH 15/26] fix: also do not use raw string in windows branch due
  to trailing `\` break editor highlight
 
 ---
@@ -552,7 +552,7 @@ index aaad35d..b70dde6 100644
 From f4410afd4d698c781ffcb283e6439c080386b935 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Wed, 20 Mar 2024 17:05:17 +0800
-Subject: [PATCH 16/25] fix: respect user specified AR_target environment
+Subject: [PATCH 16/26] fix: respect user specified AR_target environment
  variable
 
 ---
@@ -576,7 +576,7 @@ index b70dde6..28d6422 100644
 From 840574c0c9d79918d588347afa9be3d111aef4ee Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 18:15:29 +0800
-Subject: [PATCH 17/25] feat: detect wasm flavor
+Subject: [PATCH 17/26] feat: detect wasm flavor
 
 ---
  pylib/gyp/common.py         | 44 +++++++++++++++++++++++++++++++++++++
@@ -665,7 +665,7 @@ index 28d6422..392d900 100644
 From 3a727601607f935f8349f0620387ad321118ba7c Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 18:23:46 +0800
-Subject: [PATCH 18/25] lint: Too many return statements
+Subject: [PATCH 18/26] lint: Too many return statements
 
 ---
  pylib/gyp/common.py | 35 +++++++++++++++++++----------------
@@ -735,7 +735,7 @@ index 64277f7..0e5abe0 100644
 From 626f0a6c2dbad075060fe9a390e950de32873e0b Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 21:13:58 +0800
-Subject: [PATCH 19/25] fix get compiler predefines on windows
+Subject: [PATCH 19/26] fix get compiler predefines on windows
 
 ---
  pylib/gyp/common.py | 42 +++++++++++++++++++++++++++++-------------
@@ -798,7 +798,7 @@ index 0e5abe0..125c8a6 100644
 From 9e9cb995da63d3a77c1ef5302cb75b0a52987426 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 21:33:14 +0800
-Subject: [PATCH 20/25] GetCrossCompilerPredefines always return dict
+Subject: [PATCH 20/26] GetCrossCompilerPredefines always return dict
 
 ---
  pylib/gyp/common.py | 4 ++--
@@ -837,7 +837,7 @@ index 125c8a6..dae8873 100644
 From 3b49a7bbb6b849ce4bae9ad9976be7fbed547869 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 21:53:02 +0800
-Subject: [PATCH 21/25] do not broad exceptions
+Subject: [PATCH 21/26] do not broad exceptions
 
 ---
  pylib/gyp/common.py | 24 +++++++-----------------
@@ -896,7 +896,7 @@ index dae8873..a57ba65 100644
 From 83274d90e55f0e54cf20fbd8996342513ee462e9 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 23:40:16 +0800
-Subject: [PATCH 22/25] test: GetCrossCompilerPredefines
+Subject: [PATCH 22/26] test: GetCrossCompilerPredefines
 
 ---
  pylib/gyp/common_test.py | 61 +++++++++++++++++++++++++++++++++++++++-
@@ -985,7 +985,7 @@ index 0534408..f7383e4 100755
 From 04024d4db2ac0d4d29f75604a9bf3b730710c169 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 23:42:19 +0800
-Subject: [PATCH 23/25] fix lint
+Subject: [PATCH 23/26] fix lint
 
 ---
  pylib/gyp/common_test.py | 11 +++++------
@@ -1036,7 +1036,7 @@ index f7383e4..43b2254 100755
 From a6cfb16c0cbf481069b4231bf63e16587cf4eeeb Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 1 Apr 2024 23:50:01 +0800
-Subject: [PATCH 24/25] refactor: do not put so many lines in try block
+Subject: [PATCH 24/26] refactor: do not put so many lines in try block
 
 ---
  pylib/gyp/common.py | 36 ++++++++++++++++++++----------------
@@ -1099,7 +1099,7 @@ index a57ba65..01dfd30 100644
 From 4bf22c4b70a385a506d566430db59cf1c72a4602 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 2 Apr 2024 00:01:51 +0800
-Subject: [PATCH 25/25] fix: finally block should wait until subprocess
+Subject: [PATCH 25/26] fix: finally block should wait until subprocess
  terminate
 
 ---
@@ -1130,3 +1130,54 @@ index 01dfd30..30326f8 100644
      for line in lines:
          if not line:
              continue
+
+From 3a962e9702594fee81c1ec36588217c17fa24d72 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Tue, 2 Apr 2024 00:43:47 +0800
+Subject: [PATCH 26/26] suggestion change
+
+---
+ pylib/gyp/common.py | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
+
+diff --git a/pylib/gyp/common.py b/pylib/gyp/common.py
+index 30326f8..db64dc5 100644
+--- a/pylib/gyp/common.py
++++ b/pylib/gyp/common.py
+@@ -423,23 +423,17 @@ def EnsureDirExists(path):
+         pass
+ 
+ def GetCrossCompilerPredefines():  # -> dict
+-    CC = os.environ.get("CC_target") or os.environ.get("CC")
+-    CFLAGS = os.environ.get("CFLAGS")
+-    CXX = os.environ.get("CXX_target") or os.environ.get("CXX")
+-    CXXFLAGS = os.environ.get("CXXFLAGS")
+     cmd = []
+-    defines = {}
+-
+-    if CC:
++    if CC := os.environ.get("CC_target") or os.environ.get("CC"):
+         cmd += CC.split(" ")
+-        if CFLAGS:
++        if CFLAGS := os.environ.get("CFLAGS"):
+             cmd += CFLAGS.split(" ")
+-    elif CXX:
++    elif CXX := os.environ.get("CXX_target") or os.environ.get("CXX"):
+         cmd += CXX.split(" ")
+-        if CXXFLAGS:
++        if CXXFLAGS := os.environ.get("CXXFLAGS"):
+             cmd += CXXFLAGS.split(" ")
+     else:
+-        return defines
++        return {}
+ 
+     if sys.platform == "win32":
+         fd, input = tempfile.mkstemp(suffix=".c")
+@@ -462,6 +456,7 @@ def GetCrossCompilerPredefines():  # -> dict
+         )
+         stdout = out.communicate()[0]
+ 
++    defines = {}
+     lines = stdout.decode("utf-8").replace("\r\n", "\n").split("\n")
+     for line in lines:
+         if not line:
