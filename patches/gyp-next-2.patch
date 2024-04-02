@@ -1,7 +1,7 @@
 From 4c049a0a283951886636aedbcbe629ae6443286c Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 2 Apr 2024 19:26:10 +0800
-Subject: [PATCH 1/2] fix: failed to detect flavor if compiler path include
+Subject: [PATCH 1/3] fix: failed to detect flavor if compiler path include
  white spaces
 
 ---
@@ -89,7 +89,7 @@ index 43b2254..da78d39 100755
 From b6b68d64d8c9e3e597f1b7022872d02a11cc0240 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 2 Apr 2024 20:38:41 +0800
-Subject: [PATCH 2/2] raise error if exit code is not 0
+Subject: [PATCH 2/3] raise error if exit code is not 0
 
 ---
  pylib/gyp/common.py      | 26 ++++++++++++++++--------
@@ -258,3 +258,45 @@ index da78d39..a0cb2ed 100755
 +
  if __name__ == "__main__":
      unittest.main()
+
+From 50fd4ca09eb34030adeffe5cdd53aa76294d5639 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Tue, 2 Apr 2024 20:49:04 +0800
+Subject: [PATCH 3/3] fix ruff lint
+
+---
+ pylib/gyp/common.py      | 7 ++++---
+ pylib/gyp/common_test.py | 1 -
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/pylib/gyp/common.py b/pylib/gyp/common.py
+index 189f2a2..028387e 100644
+--- a/pylib/gyp/common.py
++++ b/pylib/gyp/common.py
+@@ -426,10 +426,11 @@ def EnsureDirExists(path):
+ def GetCrossCompilerPredefines():  # -> dict
+     cmd = []
+ 
+-    # shlex.split() will eat '\' in posix mode
+-    # but setting posix=False will preserve extra '"' cause CreateProcess fail on Windows
++    # shlex.split() will eat '\' in posix mode, but
++    # setting posix=False will preserve extra '"' cause CreateProcess fail on Windows
+     # this makes '\' in %CC_target% and %CFLAGS% work
+-    replace_sep = lambda s : s.replace("\\", "/") if sys.platform == "win32" else s
++    def replace_sep(s):
++        return s.replace("\\", "/") if sys.platform == "win32" else s
+ 
+     if CC := os.environ.get("CC_target") or os.environ.get("CC"):
+         cmd += shlex.split(replace_sep(CC))
+diff --git a/pylib/gyp/common_test.py b/pylib/gyp/common_test.py
+index a0cb2ed..30678e1 100755
+--- a/pylib/gyp/common_test.py
++++ b/pylib/gyp/common_test.py
+@@ -11,7 +11,6 @@
+ import sys
+ import os
+ import subprocess
+-import shlex
+ from unittest.mock import patch, MagicMock
+ 
+ class TestTopologicallySorted(unittest.TestCase):
