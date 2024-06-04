@@ -1,7 +1,7 @@
 From fbea4c4c9a0643a91acbd5025a4d7053345db95d Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:21:28 +0800
-Subject: [PATCH 1/4] feat: `node-gyp build` with make generator on Windows
+Subject: [PATCH 1/5] feat: `node-gyp build` with make generator on Windows
 
 ---
  lib/build.js     | 18 ++++++++++++------
@@ -94,7 +94,7 @@ index 8da41a849d..3a39878c91 100644
 From ff228bb4e4fe9a6f30962da34ab2ffc013663ac0 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:28:04 +0800
-Subject: [PATCH 2/4] do not add symlinks to `%Path%`
+Subject: [PATCH 2/5] do not add symlinks to `%Path%`
 
 ---
  lib/build.js | 20 ++++++++++----------
@@ -175,7 +175,7 @@ index 07779f8df1..fef817ea0a 100644
 From ecd6086c4eaa07b6cdf85040a77cd5d935731fbe Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 29 Jan 2024 00:42:52 +0800
-Subject: [PATCH 3/4] also try to find visual studio if format is not msvs
+Subject: [PATCH 3/5] also try to find visual studio if format is not msvs
 
 ---
  lib/configure.js | 6 +++++-
@@ -202,7 +202,7 @@ index 3a39878c91..b06c6ce302 100644
 From e90d7da7d26b9be72ce0a0199a70e5d624a4e035 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 18:35:38 +0800
-Subject: [PATCH 4/4] format can include flavor so use startsWith
+Subject: [PATCH 4/5] format can include flavor so use startsWith
 
 ---
  lib/configure.js | 2 +-
@@ -221,3 +221,51 @@ index b06c6ce302..60ee7412bd 100644
          const vsInfo = await findVisualStudio(release.semver, gyp.opts['msvs-version'])
          return createConfigFile(vsInfo)
        }
+
+From 709ef8fb8e8f2823f205c6c9d13b976192e88cff Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Tue, 4 Jun 2024 21:20:53 +0800
+Subject: [PATCH 5/5] exclude make generator
+
+---
+ lib/configure.js | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/lib/configure.js b/lib/configure.js
+index 25987bbb51..ee672cfbf2 100644
+--- a/lib/configure.js
++++ b/lib/configure.js
+@@ -93,18 +93,24 @@ async function configure (gyp, argv) {
+       'build dir', '"build" dir needed to be created?', isNew ? 'Yes' : 'No'
+     )
+     if (win) {
+-      let gypFormatIndex = argv.indexOf('-f')
+-      if (gypFormatIndex === -1) {
+-        gypFormatIndex = argv.indexOf('--format')
+-      }
+-      if (gypFormatIndex === -1 || !argv[gypFormatIndex + 1] || argv[gypFormatIndex + 1].startsWith('msvs')) {
+-        const vsInfo = await findVisualStudio(release.semver, gyp.opts['msvs-version'])
+-        return createConfigFile(vsInfo)
++      let usingMakeGenerator = false
++      for (let i = argv.length - 1; i >= 0; --i) {
++        const arg = argv[i]
++        if (arg === '-f' || arg === '--format') {
++          const format = argv[i + 1]
++          if (typeof format === 'string' && format.startsWith('make')) {
++            usingMakeGenerator = true
++            break
++          }
++        } else if (arg.startsWith('--format=make')) {
++          usingMakeGenerator = true
++          break
++        }
+       }
+       let vsInfo = {}
+-      try {
++      if (!usingMakeGenerator) {
+         vsInfo = await findVisualStudio(release.semver, gyp.opts['msvs-version'])
+-      } catch (_) {}
++      }
+       return createConfigFile(vsInfo)
+     }
+     return createConfigFile(null)
