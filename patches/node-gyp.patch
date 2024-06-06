@@ -1,7 +1,7 @@
-From fbea4c4c9a0643a91acbd5025a4d7053345db95d Mon Sep 17 00:00:00 2001
+From 5fb79ad0ed697e4e5c7188ecd229d4f10988c8a4 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:21:28 +0800
-Subject: [PATCH 1/5] feat: `node-gyp build` with make generator on Windows
+Subject: [PATCH 1/6] feat: `node-gyp build` with make generator on Windows
 
 ---
  lib/build.js     | 18 ++++++++++++------
@@ -66,10 +66,10 @@ index 6b8d84d3ed..07779f8df1 100644
      const verbose = log.logger.isVisible('verbose')
      let j
 diff --git a/lib/configure.js b/lib/configure.js
-index 8da41a849d..3a39878c91 100644
+index e4b8c94e3d..b0fe7ec32f 100644
 --- a/lib/configure.js
 +++ b/lib/configure.js
-@@ -66,8 +66,18 @@ async function configure (gyp, argv) {
+@@ -92,8 +92,18 @@ async function configure (gyp, argv) {
      log.verbose(
        'build dir', '"build" dir needed to be created?', isNew ? 'Yes' : 'No'
      )
@@ -91,10 +91,10 @@ index 8da41a849d..3a39878c91 100644
  
    async function createConfigFile (vsInfo) {
 
-From ff228bb4e4fe9a6f30962da34ab2ffc013663ac0 Mon Sep 17 00:00:00 2001
+From c25782ddaec79e3ac7fb3694b3f558ea19d65960 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Sun, 28 Jan 2024 23:28:04 +0800
-Subject: [PATCH 2/5] do not add symlinks to `%Path%`
+Subject: [PATCH 2/6] do not add symlinks to `%Path%`
 
 ---
  lib/build.js | 20 ++++++++++----------
@@ -172,20 +172,20 @@ index 07779f8df1..fef817ea0a 100644
        const hasSln = argv.some(function (arg) {
          return path.extname(arg) === '.sln'
 
-From ecd6086c4eaa07b6cdf85040a77cd5d935731fbe Mon Sep 17 00:00:00 2001
+From a43d5f29ae08939ff3dcc0e97b31caf01f4f3b14 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Mon, 29 Jan 2024 00:42:52 +0800
-Subject: [PATCH 3/5] also try to find visual studio if format is not msvs
+Subject: [PATCH 3/6] also try to find visual studio if format is not msvs
 
 ---
  lib/configure.js | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/lib/configure.js b/lib/configure.js
-index 3a39878c91..b06c6ce302 100644
+index b0fe7ec32f..af1cb50599 100644
 --- a/lib/configure.js
 +++ b/lib/configure.js
-@@ -75,7 +75,11 @@ async function configure (gyp, argv) {
+@@ -101,7 +101,11 @@ async function configure (gyp, argv) {
          const vsInfo = await findVisualStudio(release.semver, gyp.opts['msvs-version'])
          return createConfigFile(vsInfo)
        }
@@ -199,20 +199,20 @@ index 3a39878c91..b06c6ce302 100644
      return createConfigFile(null)
    }
 
-From e90d7da7d26b9be72ce0a0199a70e5d624a4e035 Mon Sep 17 00:00:00 2001
+From 943e9d4f12085c1d03b27ba1babdd485ae725223 Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 30 Jan 2024 18:35:38 +0800
-Subject: [PATCH 4/5] format can include flavor so use startsWith
+Subject: [PATCH 4/6] format can include flavor so use startsWith
 
 ---
  lib/configure.js | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/configure.js b/lib/configure.js
-index b06c6ce302..60ee7412bd 100644
+index af1cb50599..25987bbb51 100644
 --- a/lib/configure.js
 +++ b/lib/configure.js
-@@ -71,7 +71,7 @@ async function configure (gyp, argv) {
+@@ -97,7 +97,7 @@ async function configure (gyp, argv) {
        if (gypFormatIndex === -1) {
          gypFormatIndex = argv.indexOf('--format')
        }
@@ -222,10 +222,10 @@ index b06c6ce302..60ee7412bd 100644
          return createConfigFile(vsInfo)
        }
 
-From 709ef8fb8e8f2823f205c6c9d13b976192e88cff Mon Sep 17 00:00:00 2001
+From ce7badaa025beabcb9348d851ba0c82eca1d91bd Mon Sep 17 00:00:00 2001
 From: toyobayashi <lifenglin314@outlook.com>
 Date: Tue, 4 Jun 2024 21:20:53 +0800
-Subject: [PATCH 5/5] exclude make generator
+Subject: [PATCH 5/6] exclude make generator
 
 ---
  lib/configure.js | 24 +++++++++++++++---------
@@ -269,3 +269,35 @@ index 25987bbb51..ee672cfbf2 100644
        return createConfigFile(vsInfo)
      }
      return createConfigFile(null)
+
+From cb8bfc15ed780a6e9940bc7879f33a8d97e68b64 Mon Sep 17 00:00:00 2001
+From: toyobayashi <lifenglin314@outlook.com>
+Date: Thu, 6 Jun 2024 22:11:41 +0800
+Subject: [PATCH 6/6] hoist fs
+
+---
+ lib/build.js | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/lib/build.js b/lib/build.js
+index fef817ea0a..e1f49bb6ff 100644
+--- a/lib/build.js
++++ b/lib/build.js
+@@ -1,6 +1,7 @@
+ 'use strict'
+ 
+-const fs = require('graceful-fs').promises
++const gracefulFs = require('graceful-fs')
++const fs = gracefulFs.promises
+ const path = require('path')
+ const { glob } = require('glob')
+ const log = require('./log')
+@@ -85,7 +86,7 @@ async function build (gyp, argv) {
+   async function findSolutionFile () {
+     const files = await glob('build/*.sln')
+     if (files.length === 0) {
+-      if (require('fs').existsSync('build/Makefile') || (await glob('build/*.mk')).length !== 0) {
++      if (gracefulFs.existsSync('build/Makefile') || (await glob('build/*.mk')).length !== 0) {
+         command = makeCommand
+         await doWhich(false)
+         return
